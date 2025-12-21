@@ -1,0 +1,12 @@
+{
+  "Error Handling": {
+    "prefix": "ifr",
+    "body": [
+      "if err != nil {",
+      "\treturn $1",
+      "}",
+      "$0"
+    ],
+    "description": "Error handling"
+  }
+}
