@@ -1,4 +1,5 @@
 local map = vim.keymap.set
+local term = require('omakase.terms')
 local mini = require('plugins.mini')
 local func = require('configs.functions')
 local lsp = vim.lsp.buf
@@ -15,8 +16,8 @@ map('n', "<leader>vj", "<C-w>j", func.get_opts(opts,"Windows Movments" ))
 map('n', "<leader>vk", "<C-w>k", func.get_opts(opts,"Windows Movments" ))
 
 -- Basics
-map({ 'n', 'v' }, ";", ":", opts)
-map({ 'n', 'v' }, ":", ";", opts)
+map({ 'n', 'v' }, ";", ":")
+map({ 'n', 'v' }, ":", ";")
 map('n', "Y", "y$", opts)
 map('n', "q;", "q:", opts)
 map('n', "gl", "$", opts)
@@ -47,13 +48,16 @@ map('n', "<leader>oh", function() MiniFiles.open("~/") end, func.get_opts(opts, 
 
 -- == Pick mappings ==
 -- fuzzy search
-map('n', "<leader>ff", mini.CurrentPath, func.get_opts(opts, "Pick Parent of current Directory"))
-map('n', "<leader>fn", mini.nvimConfig, func.get_opts(opts, "Pick Nvim Configs" ))
-map('n', "<leader>fp",mini.Projects, func.get_opts(opts, "Pick Projects Directory" ))
-map('n', "<leader>fl", mini.Languages, func.get_opts(opts, "Pick Languages Directory" ))
-map('n', "<leader>fh", mini.Home, func.get_opts(opts, "Pick Home Directory" ))
-map('n', "<leader>fc", mini.Configs, func.get_opts(opts, "Pick .Config Directory") )
-map('n', "<leader>f/", [[<cmd>Pick oldfiles<cr>]], func.get_opts(opts, "Pick oldfiles" ))
+local picker = require('omakase.picker')
+map('n', "<leader>ff", picker.picker, func.get_opts(opts, "Pick Parent of current Directory"))
+
+-- map('n', "<leader>ff", mini.CurrentPath, func.get_opts(opts, "Pick Parent of current Directory"))
+-- map('n', "<leader>fn", mini.nvimConfig, func.get_opts(opts, "Pick Nvim Configs" ))
+-- map('n', "<leader>fp",mini.Projects, func.get_opts(opts, "Pick Projects Directory" ))
+-- map('n', "<leader>fl", mini.Languages, func.get_opts(opts, "Pick Languages Directory" ))
+-- map('n', "<leader>fh", mini.Home, func.get_opts(opts, "Pick Home Directory" ))
+-- map('n', "<leader>fc", mini.Configs, func.get_opts(opts, "Pick .Config Directory") )
+-- map('n', "<leader>f/", [[<cmd>Pick oldfiles<cr>]], func.get_opts(opts, "Pick oldfiles" ))
 
 -- Pick search
 map('n', "<leader>sh", "<cmd>Pick help<CR>", func.get_opts(opts, "Pick-search help" ))
@@ -71,7 +75,7 @@ map('n', "<leader>s;", "<cmd>Pick history<CR>", func.get_opts(opts, "Pick-search
 map('v', "<leader>s", [[:s/\%V]], func.get_opts(opts, "Substitute selected" ))
 map('v', "<leader>n", [[:norm]], func.get_opts(opts, "Norm mode" ))
 map('v', "<leader>v", [[:s/\v]], func.get_opts(opts, "Very magic mode" ))
-map('n', "vv", 'V', func.get_opts(opts, "Select line" ))
+map('n', "vv", 'viw', func.get_opts(opts, "Select line" ))
 
 -- == Normal mode mappings ==
 map('n', "<leader>cl", "<cmd>nohlsearch<CR>", func.get_opts(opts, "Clear search highlights" ))
@@ -114,10 +118,10 @@ map('v', ">", ">gv", func.get_opts(opts, "Indent right and reselect" ))
 map('n', "J", "mzJ`z", func.get_opts(opts, "Join lines and keep cursor position" ))
 
 -- ==== Terminal mappings ===
-map('n', '<leader>tt', '<cmd>ToggleTerm size=5 direction=horizontal<CR>', func.get_opts(opts, 'Toggle bottom terminal'))
+map('n', '<leader>tt', term.toggle_terminal, func.get_opts(opts, 'Toggle bottom terminal'))
 map( 'n', '<leader>tf', '<cmd>ToggleTerm direction=float<CR>', func.get_opts(opts, 'Toggle floating Terminal'))
 map('n', '<leader>tb', '<cmd>ToggleTerm direction=tab<CR>', func.get_opts(opts, 'Toggle terminal on another tab'))
-map('t', 'qq', [[<C-\><C-n><cmd>ToggleTerm<CR>]], func.get_opts(opts, 'Close on terminal mode'))
+map('t', 'qq', [[<C-\><C-n>]], func.get_opts(opts, 'Close on terminal mode'))
 
 
 -- LSP actions
@@ -154,3 +158,8 @@ map('i', '<Right>', func.snippet_jump_next, func.get_opts(expr_opts, 'Jump to th
 map('i', '<Left>', func.snippet_jump_prev, func.get_opts(expr_opts, ' Jump to the previous arg on snippets'))
 map('i', '<Esc>', func.snippet_stop, func.get_opts(opts, 'Close snippet'))
 
+-- debug
+map({ 'v', 'n' }, '<leader>in', ':Inspect<cr>')
+map('v', '<leader>ldb', 'y:lua print(<C-r>")<cr>')
+map('n', '<leader>cn', ':colorscheme nightfly<cr>')
+map("n", "<leader>tx", term.toggle_terminal)

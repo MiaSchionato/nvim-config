@@ -8,7 +8,8 @@ vim.api.nvim_create_autocmd("VimEnter", {
 })
 
 -- make sure to require the colorscheme first
-require('plugins.nightfly')
+local colors = require('omakase.nightflyPalette')
+colors.setup()
 
 -- =============================================================================
 -- Automatic Recursive Module Loader

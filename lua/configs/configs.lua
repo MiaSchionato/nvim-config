@@ -2,6 +2,7 @@ local o = vim.opt
 -- Tab display settings
 o.showtabline = 1  -- Always show tabline (0=never, 1=when multiple tabs, 2=always)
 o.tabline = "%!v:lua.require('configs.functions').MyTabline()"
+o.statusline = "%!v:lua.require('omakase.statusline').MyStatusLine()"
 
 -- Basic settings
 o.number = true                              -- Line numbers
