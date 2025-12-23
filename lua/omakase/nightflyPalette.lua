@@ -241,7 +241,7 @@ local groups = {
   ["@tag.delimiter"] = { fg = green },
   ["@type.builtin"] = { fg = lavender },
   ["@type.qualifier"] = { fg = violet },
-  ["@variable"] = { fg =  lighter_blue },
+  ["@variable"] = { fg =  white_blue },
   ["@variable.builtin"] = { fg = green },
   ["@variable.member"] = { fg = lavender },
   ["@variable.parameter"] = { fg = lavender },

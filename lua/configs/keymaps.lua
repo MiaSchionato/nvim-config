@@ -46,30 +46,28 @@ map('n', "<leader>oc", function() MiniFiles.open("~/.config/nvim/") end, func.ge
 map('n', "<leader>oh", function() MiniFiles.open("~/") end, func.get_opts(opts, "Home Directory" ))
 
 
--- == Pick mappings ==
--- fuzzy search
-local picker = require('omakase.picker')
-map('n', "<leader>ff", picker.picker, func.get_opts(opts, "Pick Parent of current Directory"))
-
--- map('n', "<leader>ff", mini.CurrentPath, func.get_opts(opts, "Pick Parent of current Directory"))
--- map('n', "<leader>fn", mini.nvimConfig, func.get_opts(opts, "Pick Nvim Configs" ))
--- map('n', "<leader>fp",mini.Projects, func.get_opts(opts, "Pick Projects Directory" ))
--- map('n', "<leader>fl", mini.Languages, func.get_opts(opts, "Pick Languages Directory" ))
--- map('n', "<leader>fh", mini.Home, func.get_opts(opts, "Pick Home Directory" ))
--- map('n', "<leader>fc", mini.Configs, func.get_opts(opts, "Pick .Config Directory") )
+-- == Fuzzt Search ==
+local fzf = require('omakase.fuzzySearch')
+map("n", "<leader>ff",function()fzf.fuzzy_search("/Users/mia/")end, func.get_opts(opts, "Fuzzy Search Home Directory"))
+map("n", "<leader>fp",function()fzf.fuzzy_search("Projects/")end, func.get_opts(opts, "Fuzzy Search Projects Directory"))
+map("n", "<leader>fn",function()fzf.fuzzy_search(".config/nvim/")end, func.get_opts(opts, "Fuzzy Search Nvim config Directory"))
+map("n", "<leader>fl",function()fzf.fuzzy_search("Documents/my_devops_journey/Languages/")end, func.get_opts(opts, "Fuzzy Search Languages Directory"))
+map('n', "<leader>fc",function()fzf.fuzzy_search(".config/")end, func.get_opts(opts, "Pick .Config Directory"))
+map('n', "<leader>fg", function() fzf.fuzzy_grep("Projects/")end)
+map('n', "<leader>fgx", function() fzf.fuzzy_grep(vim.fn.expand('%:p:h'))end)
 -- map('n', "<leader>f/", [[<cmd>Pick oldfiles<cr>]], func.get_opts(opts, "Pick oldfiles" ))
 
 -- Pick search
-map('n', "<leader>sh", "<cmd>Pick help<CR>", func.get_opts(opts, "Pick-search help" ))
-map('n', "<leader>se", "<cmd>Pick explorer<CR>", func.get_opts(opts, "Pick-search explorer" ))
-map('n', "<leader>sb", "<cmd>Pick buffers<CR>", func.get_opts(opts, "Pick-search buffers" ))
-map('n', "<leader>s?", "<cmd>Pick keymaps<CR>", func.get_opts(opts, "Pick-search keymaps" ))
-map('n', "<leader>?", "<cmd>Pick keymaps<CR>", func.get_opts(opts, "Pick-search keymaps" ))
-map('n', "<leader>so", "<cmd>Pick options<CR>", func.get_opts(opts, "Pick-search options" ))
-map('n', "<leader>sd", "<cmd>Pick diagnostic<CR>", func.get_opts(opts, "Pick-search diagnostic" ))
-map('n', "<leader>s\'", "<cmd>Pick registers<CR>", func.get_opts(opts, "Pick-search registers" ))
-map('n', "<leader>sg", "<cmd>Pick buf_lines<CR>", func.get_opts(opts, "Pick-search buffer with lines grep" ))
-map('n', "<leader>s;", "<cmd>Pick history<CR>", func.get_opts(opts, "Pick-search command history" ))
+-- map('n', "<leader>sh", "<cmd>Pick help<CR>", func.get_opts(opts, "Pick-search help" ))
+-- map('n', "<leader>se", "<cmd>Pick explorer<CR>", func.get_opts(opts, "Pick-search explorer" ))
+-- map('n', "<leader>sb", "<cmd>Pick buffers<CR>", func.get_opts(opts, "Pick-search buffers" ))
+-- map('n', "<leader>s?", "<cmd>Pick keymaps<CR>", func.get_opts(opts, "Pick-search keymaps" ))
+-- map('n', "<leader>?", "<cmd>Pick keymaps<CR>", func.get_opts(opts, "Pick-search keymaps" ))
+-- map('n', "<leader>so", "<cmd>Pick options<CR>", func.get_opts(opts, "Pick-search options" ))
+-- map('n', "<leader>sd", "<cmd>Pick diagnostic<CR>", func.get_opts(opts, "Pick-search diagnostic" ))
+-- map('n', "<leader>s\'", "<cmd>Pick registers<CR>", func.get_opts(opts, "Pick-search registers" ))
+-- map('n', "<leader>sg", "<cmd>Pick buf_lines<CR>", func.get_opts(opts, "Pick-search buffer with lines grep" ))
+-- map('n', "<leader>s;", "<cmd>Pick history<CR>", func.get_opts(opts, "Pick-search command history" ))
 
 -- == Visual mode mappings ==
 map('v', "<leader>s", [[:s/\%V]], func.get_opts(opts, "Substitute selected" ))
@@ -119,7 +117,7 @@ map('n', "J", "mzJ`z", func.get_opts(opts, "Join lines and keep cursor position"
 
 -- ==== Terminal mappings ===
 map('n', '<leader>tt', term.toggle_terminal, func.get_opts(opts, 'Toggle bottom terminal'))
-map( 'n', '<leader>tf', '<cmd>ToggleTerm direction=float<CR>', func.get_opts(opts, 'Toggle floating Terminal'))
+map('n', '<leader>tf', '<cmd>ToggleTerm direction=float<CR>', func.get_opts(opts, 'Toggle floating Terminal'))
 map('n', '<leader>tb', '<cmd>ToggleTerm direction=tab<CR>', func.get_opts(opts, 'Toggle terminal on another tab'))
 map('t', 'qq', [[<C-\><C-n>]], func.get_opts(opts, 'Close on terminal mode'))
 
@@ -162,4 +160,6 @@ map('i', '<Esc>', func.snippet_stop, func.get_opts(opts, 'Close snippet'))
 map({ 'v', 'n' }, '<leader>in', ':Inspect<cr>')
 map('v', '<leader>ldb', 'y:lua print(<C-r>")<cr>')
 map('n', '<leader>cn', ':colorscheme nightfly<cr>')
-map("n", "<leader>tx", term.toggle_terminal)
+map( "n", "<leader>tx", term.toggle_terminal)
+
+-- teste
