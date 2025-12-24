@@ -84,7 +84,7 @@ map({ 'n', "v" },"<leader>dd", '"_d', func.get_opts(opts, "Delete without yankin
 map('n', "<leader>n", 'viw*n', func.get_opts(opts, "Delete without yanking" ))
 
 -- == Insert mode mappings ==
-map('i', "jf", "<Esc>", func.get_opts(opts, "Next buffer" ))
+-- map('i', "jf", "<Esc>", func.get_opts(opts, "Normal mode with jf" ))
 
 
 -- Buffer navigation
@@ -117,6 +117,8 @@ map('n', "J", "mzJ`z", func.get_opts(opts, "Join lines and keep cursor position"
 
 -- ==== Terminal mappings ===
 map('n', '<leader>tt', term.toggle_terminal, func.get_opts(opts, 'Toggle bottom terminal'))
+map('n', '<leader>tg',function () term.toggle_terminal("gemini")end, func.get_opts(opts, 'Toggle bottom terminal'))
+-- map('nt', '<Esc>', term.toggle_terminal, func.get_opts(opts, 'Toggle bottom terminal'))
 map('n', '<leader>tf', '<cmd>ToggleTerm direction=float<CR>', func.get_opts(opts, 'Toggle floating Terminal'))
 map('n', '<leader>tb', '<cmd>ToggleTerm direction=tab<CR>', func.get_opts(opts, 'Toggle terminal on another tab'))
 map('t', 'qq', [[<C-\><C-n>]], func.get_opts(opts, 'Close on terminal mode'))

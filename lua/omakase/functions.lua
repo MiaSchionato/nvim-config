@@ -4,6 +4,9 @@ function F.create_window(title, ratio)
   local buf = vim.api.nvim_create_buf(false, true)
   local height = math.ceil(vim.o.lines * ratio)
   local width = math.ceil(vim.o.columns * ratio)
+  if title == " " then
+    title = nil
+  end
 
   local win = vim.api.nvim_open_win(buf, true,{
     relative = "editor",
@@ -13,9 +16,9 @@ function F.create_window(title, ratio)
     col = math.ceil((vim.o.columns - width) / 2),
     style = "minimal",
     border = "rounded",
-    title = " ".. title .. " ",
-    title_pos = "center"
+    title = title,
   })
+
   return buf, win
 end
 
