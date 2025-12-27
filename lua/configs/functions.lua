@@ -147,4 +147,100 @@ function M.minifiles_toggle()
   end
 end
 
+function M.create_window(title, ratio)
+  local buf = vim.api.nvim_create_buf(false, true)
+  local height = math.ceil(vim.o.lines * ratio)
+  local width = math.ceil(vim.o.columns * ratio)
+  if title == " " then
+    title = nil
+  end
+
+  local win = vim.api.nvim_open_win(buf, true,{
+    relative = "editor",
+    width = width,
+    height = height,
+    row = math.ceil((vim.o.lines - height) / 2),
+    col = math.ceil((vim.o.columns - width) / 2),
+    style = "minimal",
+    border = "rounded",
+    title = title,
+  })
+
+  return win, buf
+end
+
+local match_id = {}
+function M.toggle_word_highlight()
+    local word = vim.fn.expand('<cword>')
+    if match_id[word] ~= nil then
+        pcall(vim.fn.matchdelete, match_id[word])
+        match_id[word] = nil
+        vim.fn.setreg("/", "")
+    else
+        if word == "" then return end
+
+        local pattern = [[\<]] .. word .. [[\>]]
+        match_id[word] = vim.fn.matchadd('Search', pattern)
+        vim.fn.setreg("/", pattern)
+    end
+end
+
+-- TODO: Implement git diff toggle
+local namespace_id =vim.api.nvim_create_namespace("git-diff")
+local diff_active = false
+
+function M.git_diff_toggle()
+  if diff_active then
+    vim.api.nvim_buf_clear_namespace(0,namespace_id,0,-1)
+    diff_active = false
+    vim.notify("diff deactivated")
+    return
+  end
+
+local buf_path = vim.api.nvim_buf_get_name(0)
+if buf_path == "" then return end
+local file_path = vim.fn.fnamemodify(buf_path, ":h")
+
+
+local cmd = string.format("git -C %s diff -U0 --no-color -- %s",
+vim.fn.shellescape(file_path), -- buff parent dir
+vim.fn.shellescape(vim.fn.fnamemodify(buf_path, ":t"))
+)
+
+local output = vim.fn.systemlist(cmd)
+
+if not output or #output == 0 then
+  vim.notify("Git diff: nothing to show")
+  return
+end
+
+diff_active = true
+vim.notify("Git diff activated")
+local current_line = 0
+
+  for i = 1, #output do
+    local line = output[i]
+
+    -- local start_line = line:match("^@@%s*%-?%d*,?%d*%s+%+(%d+),?%d*%s*@@")
+    local start_line = line:match("^@@.-%+(%d+)")
+    if start_line then
+      current_line = tonumber(start_line) or 0
+
+    elseif line:sub(1, 1) == "+" and line:sub(1, 3) ~= "+++" then
+      vim.api.nvim_buf_set_extmark(0, namespace_id, current_line - 1, 0, {
+        line_hl_group = "DiffAdd",
+        end_row = current_line, -- covers whole line
+      })
+      current_line = current_line + 1
+
+    elseif line:sub(1,1) == "-" and line:sub(1, 3) ~= "---" then
+      local deleted_text = line:sub(2)
+      vim.api.nvim_buf_set_extmark(0, namespace_id, math.max(0, current_line -1), 0, {
+        virt_lines = {{{" - " .. deleted_text, "DiffDelete"}}},
+        virt_lines_above = true,
+      })
+
+    end
+  end
+end
 return M

@@ -3,10 +3,10 @@ local M = {}
 -- Using a table to store terminal instances, keyed by command.
 -- Each entry will be { buf = buf_id, win = win_id }
 local terminals = {}
-local func = require('omakase.functions')
+local func = require('configs.functions')
 
 function M.toggle_terminal(cmd)
-  cmd = cmd or "default" -- Use a default key for a generic terminal
+  cmd = cmd or "default"
 
   local term = terminals[cmd]
 
@@ -17,44 +17,54 @@ function M.toggle_terminal(cmd)
     return
   end
 
-  -- If a valid buffer for this command exists, reuse it.
+  -- If a valid buffer for this command exists, re-open it in a new window.
   if term and term.buf and vim.api.nvim_buf_is_valid(term.buf) then
     local buf = term.buf
-    local _, win = func.create_window(" ", 0.8) -- Create a new window for the existing buffer
+    local win, _ = func.create_window(" ", 0.8)
     vim.api.nvim_win_set_buf(win, buf)
     term.win = win
-  else
-
-    -- No valid terminal for this command, so create one.
-    local _, new_win = func.create_window(" ", 0.8)
-
-    local old_win = vim.api.nvim_get_current_win()
-    vim.api.nvim_set_current_win(new_win)
-
-    local terminal_command = "terminal"
-    if cmd ~= "default" then
-      terminal_command = terminal_command .. " " .. cmd
-    end
-    vim.cmd(terminal_command)
-
-    local new_buf = vim.api.nvim_get_current_buf()
-
-    -- Store the new terminal instance
-    terminals[cmd] = { buf = new_buf, win = new_win }
-
-    vim.api.nvim_set_current_win(old_win) -- Restore focus
-
-    -- Set the keymap on the new buffer
-    vim.keymap.set('n', '<Esc>', function()
-      local current_term = terminals[cmd]
-      if current_term and current_term.win and vim.api.nvim_win_is_valid(current_term.win) then
-        vim.api.nvim_win_close(current_term.win, true)
-        current_term.win = nil
-      end
-    end, { silent = true, buffer = new_buf, desc = "Hide floating terminal" })
+    vim.api.nvim_set_current_win(win)
+    vim.cmd("startinsert") -- Re-enter terminal-insert mode.
+    return
   end
 
-  vim.cmd("startinsert")
+  -- If we get here, create a new terminal from scratch.
+  local cwd
+  local current_buf_name = vim.api.nvim_buf_get_name(0)
+  if current_buf_name ~= "" and vim.fn.filereadable(current_buf_name) == 1 and vim.bo.buftype == "" then
+    cwd = vim.fn.expand("%:p:h")
+  else
+    cwd = vim.fn.getcwd()
+  end
+
+  -- Create a floating window, then switch to it.
+  local new_win, _ = func.create_window(" ", 0.8)
+  vim.api.nvim_set_current_win(new_win)
+
+  -- Set the working directory for this window only, then open the terminal.
+  local escaped_cwd = vim.fn.fnameescape(cwd)
+  vim.cmd('lcd ' .. escaped_cwd)
+
+  -- Run the terminal, which will inherit the window-local CWD.
+  local final_cmd = "terminal"
+  if cmd and cmd ~= "default" then
+    final_cmd = final_cmd .. " " .. cmd
+  end
+  vim.cmd(final_cmd)
+  vim.cmd('startinsert')
+
+  -- The :terminal command created a new buffer, so we store it.
+  local term_buf = vim.api.nvim_get_current_buf()
+  terminals[cmd] = { buf = term_buf, win = new_win }
+
+  -- Set the keymap on the new buffer to close the window.
+  vim.keymap.set('n', '<Esc>', function()
+    local current_term = terminals[cmd]
+    if current_term and current_term.win and vim.api.nvim_win_is_valid(current_term.win) then
+      vim.api.nvim_win_close(current_term.win, true)
+      current_term.win = nil
+    end
+  end, { silent = true, buffer = term_buf, desc = "Hide floating terminal" })
 end
 
 return M

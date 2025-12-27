@@ -1,7 +1,7 @@
 local map = vim.keymap.set
 local term = require('omakase.terms')
-local mini = require('plugins.mini')
 local func = require('configs.functions')
+local fzf = require('omakase.fuzzySearch')
 local lsp = vim.lsp.buf
 local diag = vim.diagnostic
 local opts = {noremap = true, silent = true }
@@ -47,15 +47,29 @@ map('n', "<leader>oh", function() MiniFiles.open("~/") end, func.get_opts(opts, 
 
 
 -- == Fuzzt Search ==
-local fzf = require('omakase.fuzzySearch')
+-- Fuzzy Search Directories
 map("n", "<leader>ff",function()fzf.fuzzy_search("/Users/mia/")end, func.get_opts(opts, "Fuzzy Search Home Directory"))
-map("n", "<leader>fp",function()fzf.fuzzy_search("Projects/")end, func.get_opts(opts, "Fuzzy Search Projects Directory"))
-map("n", "<leader>fn",function()fzf.fuzzy_search(".config/nvim/")end, func.get_opts(opts, "Fuzzy Search Nvim config Directory"))
-map("n", "<leader>fl",function()fzf.fuzzy_search("Documents/my_devops_journey/Languages/")end, func.get_opts(opts, "Fuzzy Search Languages Directory"))
-map('n', "<leader>fc",function()fzf.fuzzy_search(".config/")end, func.get_opts(opts, "Pick .Config Directory"))
-map('n', "<leader>fg", function() fzf.fuzzy_grep("Projects/")end)
-map('n', "<leader>fgx", function() fzf.fuzzy_grep(vim.fn.expand('%:p:h'))end)
--- map('n', "<leader>f/", [[<cmd>Pick oldfiles<cr>]], func.get_opts(opts, "Pick oldfiles" ))
+map("n", "<leader>fp",function()fzf.fuzzy_search("/Users/mia/Projects/")end, func.get_opts(opts, "Fuzzy Search Projects Directory"))
+map("n", "<leader>fn",function()fzf.fuzzy_search("/Users/mia/.config/nvim/")end, func.get_opts(opts, "Fuzzy Search Nvim config Directory"))
+map("n", "<leader>fl",function()fzf.fuzzy_search("/Users/mia/Documents/my_devops_journey/Languages/")end, func.get_opts(opts, "Fuzzy Search Languages Directory"))
+map('n', "<leader>fc",function()fzf.fuzzy_search("/Users/mia/.config/")end, func.get_opts(opts, "Pick .Config Directory"))
+
+-- Fuzzy Grep
+-- TODO: Think in better keybinds
+map('n', "<leader>fg", function() fzf.fuzzy_grep(vim.fn.expand('%:p:h:h'))end, func.get_opts(opts, "Fuzzy Grep"))
+-- Fuzzy Searchs
+map('n', "<leader>f/", function() fzf.fuzzy_oldfiles()end,func.get_opts(opts, "Fuzzy Oldfiless"))
+map('n', "<leader>fh", function() fzf.fuzzy_help()end, func.get_opts(opts, "Fuzzy Help"))
+map('n', "<leader>fb", function() fzf.fuzzy_buffers()end,func.get_opts(opts, "Fuzzy Buffers"))
+map('n', "<leader>fj", function() fzf.fuzzy_jump()end,func.get_opts(opts, "Fuzzy Jumps"))
+-- map('n', "<leader>fgx", function() fzf.fuzzy_git_grep()end)
+
+
+
+
+-- Git stuff
+map('n', "<leader>gl", function() fzf.fuzzy_git()end, func.get_opts(opts,"Git Fuzzy Logs"))
+map('n', "<leader>gd", function() func.git_diff_toggle()end, func.get_opts(opts,"Git Diff"))
 
 -- Pick search
 -- map('n', "<leader>sh", "<cmd>Pick help<CR>", func.get_opts(opts, "Pick-search help" ))
@@ -86,6 +100,8 @@ map('n', "<leader>n", 'viw*n', func.get_opts(opts, "Delete without yanking" ))
 -- == Insert mode mappings ==
 -- map('i', "jf", "<Esc>", func.get_opts(opts, "Normal mode with jf" ))
 
+-- Comments
+map('n', "<leader>ct", 'oTODO:<esc>:normal gcc<cr>A')
 
 -- Buffer navigation
 map('n', "<leader>bn", "<cmd>bnext<CR>", func.get_opts(opts, "Next buffer" ))
@@ -118,6 +134,7 @@ map('n', "J", "mzJ`z", func.get_opts(opts, "Join lines and keep cursor position"
 -- ==== Terminal mappings ===
 map('n', '<leader>tt', term.toggle_terminal, func.get_opts(opts, 'Toggle bottom terminal'))
 map('n', '<leader>tg',function () term.toggle_terminal("gemini")end, func.get_opts(opts, 'Toggle bottom terminal'))
+map('n', '<leader>th',function () term.toggle_terminal("cd")end, func.get_opts(opts, 'Toggle bottom terminal'))
 -- map('nt', '<Esc>', term.toggle_terminal, func.get_opts(opts, 'Toggle bottom terminal'))
 map('n', '<leader>tf', '<cmd>ToggleTerm direction=float<CR>', func.get_opts(opts, 'Toggle floating Terminal'))
 map('n', '<leader>tb', '<cmd>ToggleTerm direction=tab<CR>', func.get_opts(opts, 'Toggle terminal on another tab'))
@@ -162,6 +179,10 @@ map('i', '<Esc>', func.snippet_stop, func.get_opts(opts, 'Close snippet'))
 map({ 'v', 'n' }, '<leader>in', ':Inspect<cr>')
 map('v', '<leader>ldb', 'y:lua print(<C-r>")<cr>')
 map('n', '<leader>cn', ':colorscheme nightfly<cr>')
+
 map( "n", "<leader>tx", term.toggle_terminal)
 
 -- teste
+vim.keymap.set('n', '<leader>h', func.toggle_word_highlight)
+vim.keymap.set('n', '<leader>hx', fzf.fuzzy_jump)
+
