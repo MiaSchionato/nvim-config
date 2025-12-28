@@ -2,6 +2,7 @@ local map = vim.keymap.set
 local term = require('omakase.terms')
 local func = require('configs.functions')
 local fzf = require('omakase.fuzzySearch')
+local sur = require('omakase.surround')
 local lsp = vim.lsp.buf
 local diag = vim.diagnostic
 local opts = {noremap = true, silent = true }
@@ -10,10 +11,10 @@ local expr_opts = {expr = true, noremap = true, silent = true }
 vim.g.mapleader = ' '
 
 -- SPLIT View
-map('n', "<leader>vl", "<C-w>l", func.get_opts(opts,"Windows Movments" ))
-map('n', "<leader>vh", "<C-w>h", func.get_opts(opts,"Windows Movments" ))
-map('n', "<leader>vj", "<C-w>j", func.get_opts(opts,"Windows Movments" ))
-map('n', "<leader>vk", "<C-w>k", func.get_opts(opts,"Windows Movments" ))
+map('n', "<leader>vl", "<C-w>l", func.getOpts(opts,"Windows Movments" ))
+map('n', "<leader>vh", "<C-w>h", func.getOpts(opts,"Windows Movments" ))
+map('n', "<leader>vj", "<C-w>j", func.getOpts(opts,"Windows Movments" ))
+map('n', "<leader>vk", "<C-w>k", func.getOpts(opts,"Windows Movments" ))
 
 -- Basics
 map({ 'n', 'v' }, ";", ":")
@@ -24,52 +25,55 @@ map('n', "gl", "$", opts)
 map('n', "gh", "0", opts)
 map('n', "ge", "G", opts)
 
-map("n", "x", "V", func.get_opts(opts,"Line select (like x on Helix editor)" ))
-map("v", "x", "j", func.get_opts(opts,"Line select (like x on Helix editor)" ))
-map("n", "z", "V", func.get_opts(opts,"Line select (like x on Helix editor)" ))
-map("v", "z", "k", func.get_opts(opts,"Line select (like x on Helix editor)" ))
+map("n", "x", "V", func.getOpts(opts,"Line select (like x on Helix editor)" ))
+map("v", "x", "j", func.getOpts(opts,"Line select (like x on Helix editor)" ))
+map("n", "z", "V", func.getOpts(opts,"Line select (like x on Helix editor)" ))
+map("v", "z", "k", func.getOpts(opts,"Line select (like x on Helix editor)" ))
 
 map("n", "<leader><leader>", "<cmd>so<cr>", opts)
 
+map("n", "U", "<C-r>", opts)
+
 -- Window Tab mappings
-map('n', "<leader>wn", "<cmd>tabnew<CR>", func.get_opts(opts, "New Tab" ))
-map('n', "<leader>wl", "<cmd>tabnext<CR>", func.get_opts(opts, "Next Tab" ))
-map('n', "<leader>wh", "<cmd>tabprevious<CR>", func.get_opts(opts, "Previous Tab" ))
-map('n', "<leader>wq", "<cmd>tabclose<CR>", func.get_opts(opts, "Close Tab" ))
-map('n', "<leader>wo", "<cmd>tabonly<CR>", func.get_opts(opts, "Close all other Tabs" ))
+map('n', "<leader>wn", "<cmd>tabnew<CR>", func.getOpts(opts, "New Tab" ))
+map('n', "<leader>wl", "<cmd>tabnext<CR>", func.getOpts(opts, "Next Tab" ))
+map('n', "<leader>wh", "<cmd>tabprevious<CR>", func.getOpts(opts, "Previous Tab" ))
+map('n', "<leader>wq", "<cmd>tabclose<CR>", func.getOpts(opts, "Close Tab" ))
+map('n', "<leader>wo", "<cmd>tabonly<CR>", func.getOpts(opts, "Close all other Tabs" ))
 
 -- == Files mappings ==
-map('n', '<leader>e', func.minifiles_toggle, func.get_opts(opts, 'Toggle Mini Files'))
-map('n', "<leader>op",function() MiniFiles.open('/Users/mia/Projects/') end, func.get_opts(opts, "Projects Directory" ))
-map('n', "<leader>ol", function() MiniFiles.open("~/Documents/my_devops_journey/Languages") end, func.get_opts(opts, "Languages Directory" ))
-map('n', "<leader>oc", function() MiniFiles.open("~/.config/nvim/") end, func.get_opts(opts, "nvim config Directory" ))
-map('n', "<leader>oh", function() MiniFiles.open("~/") end, func.get_opts(opts, "Home Directory" ))
+map('n', '<leader>e', func.minifilesToggle, func.getOpts(opts, 'Toggle Mini Files'))
+map('n', "<leader>op",function() MiniFiles.open('/Users/mia/Projects/') end, func.getOpts(opts, "Projects Directory" ))
+map('n', "<leader>ol", function() MiniFiles.open("~/Documents/my_devops_journey/Languages") end, func.getOpts(opts, "Languages Directory" ))
+map('n', "<leader>oc", function() MiniFiles.open("~/.config/nvim/") end, func.getOpts(opts, "nvim config Directory" ))
+map('n', "<leader>oh", function() MiniFiles.open("~/") end, func.getOpts(opts, "Home Directory" ))
 
 
 -- == Fuzzt Search ==
 -- Fuzzy Search Directories
-map("n", "<leader>ff",function()fzf.fuzzy_search("/Users/mia/")end, func.get_opts(opts, "Fuzzy Search Home Directory"))
-map("n", "<leader>fp",function()fzf.fuzzy_search("/Users/mia/Projects/")end, func.get_opts(opts, "Fuzzy Search Projects Directory"))
-map("n", "<leader>fn",function()fzf.fuzzy_search("/Users/mia/.config/nvim/")end, func.get_opts(opts, "Fuzzy Search Nvim config Directory"))
-map("n", "<leader>fl",function()fzf.fuzzy_search("/Users/mia/Documents/my_devops_journey/Languages/")end, func.get_opts(opts, "Fuzzy Search Languages Directory"))
-map('n', "<leader>fc",function()fzf.fuzzy_search("/Users/mia/.config/")end, func.get_opts(opts, "Pick .Config Directory"))
+map("n", "<leader>ff",function()fzf.fuzzySearch("/Users/mia/")end, func.getOpts(opts, "Fuzzy Search Home Directory"))
+map("n", "<leader>fp",function()fzf.fuzzySearch("/Users/mia/Projects/")end, func.getOpts(opts, "Fuzzy Search Projects Directory"))
+map("n", "<leader>fn",function()fzf.fuzzySearch("/Users/mia/.config/nvim/")end, func.getOpts(opts, "Fuzzy Search Nvim config Directory"))
+map("n", "<leader>fl",function()fzf.fuzzySearch("/Users/mia/Documents/my_devops_journey/Languages/")end, func.getOpts(opts, "Fuzzy Search Languages Directory"))
+map('n', "<leader>fc",function()fzf.fuzzySearch("/Users/mia/.config/")end, func.getOpts(opts, "Fuzzy .Config Directory"))
+map('n', "<leader>fm",function()fzf.fuzzySearch("/Users/mia/Documents/MindGarden/")end, func.getOpts(opts, "Fuzzy .Config Directory"))
 
 -- Fuzzy Grep
 -- TODO: Think in better keybinds
-map('n', "<leader>fg", function() fzf.fuzzy_grep(vim.fn.expand('%:p:h:h'))end, func.get_opts(opts, "Fuzzy Grep"))
+map('n', "<leader>fg", function() fzf.fuzzyGrep(vim.fn.expand('%:p:h:h'))end, func.getOpts(opts, "Fuzzy Grep"))
 -- Fuzzy Searchs
-map('n', "<leader>f/", function() fzf.fuzzy_oldfiles()end,func.get_opts(opts, "Fuzzy Oldfiless"))
-map('n', "<leader>fh", function() fzf.fuzzy_help()end, func.get_opts(opts, "Fuzzy Help"))
-map('n', "<leader>fb", function() fzf.fuzzy_buffers()end,func.get_opts(opts, "Fuzzy Buffers"))
-map('n', "<leader>fj", function() fzf.fuzzy_jump()end,func.get_opts(opts, "Fuzzy Jumps"))
+map('n', "<leader>f/", function() fzf.fuzzyOldfiles()end,func.getOpts(opts, "Fuzzy Oldfiless"))
+map('n', "<leader>fh", function() fzf.fuzzyHelp()end, func.getOpts(opts, "Fuzzy Help"))
+map('n', "<leader>fb", function() fzf.fuzzyBuffers()end,func.getOpts(opts, "Fuzzy Buffers"))
+map('n', "<leader>fj", function() fzf.fuzzyJump()end,func.getOpts(opts, "Fuzzy Jumps"))
 -- map('n', "<leader>fgx", function() fzf.fuzzy_git_grep()end)
 
 
 
 
 -- Git stuff
-map('n', "<leader>gl", function() fzf.fuzzy_git()end, func.get_opts(opts,"Git Fuzzy Logs"))
-map('n', "<leader>gd", function() func.git_diff_toggle()end, func.get_opts(opts,"Git Diff"))
+map('n', "<leader>gl", function() fzf.fuzzyGit()end, func.getOpts(opts,"Git Fuzzy Logs"))
+map('n', "<leader>gd", function() func.gitDiffToggle()end, func.getOpts(opts,"Git Diff"))
 
 -- Pick search
 -- map('n', "<leader>sh", "<cmd>Pick help<CR>", func.get_opts(opts, "Pick-search help" ))
@@ -84,18 +88,27 @@ map('n', "<leader>gd", function() func.git_diff_toggle()end, func.get_opts(opts,
 -- map('n', "<leader>s;", "<cmd>Pick history<CR>", func.get_opts(opts, "Pick-search command history" ))
 
 -- == Visual mode mappings ==
-map('v', "<leader>s", [[:s/\%V]], func.get_opts(opts, "Substitute selected" ))
-map('v', "<leader>n", [[:norm]], func.get_opts(opts, "Norm mode" ))
-map('v', "<leader>v", [[:s/\v]], func.get_opts(opts, "Very magic mode" ))
-map('n', "vv", 'viw', func.get_opts(opts, "Select line" ))
+map('v', "<leader>s", [[:s/\%V]], {desc =  "Substitute selected" })
+map('v', "<leader>n", [[:norm]], func.getOpts(opts, "Norm mode" ))
+map('v', "<leader>v", [[:s/\v]], func.getOpts(opts, "Very magic mode" ))
+map('n', "vv", 'viw', func.getOpts(opts, "Select line" ))
+
+map('v', "J", '5j', func.getOpts(opts, "Down 5 lines " ))
+map('v', "K", '5k', func.getOpts(opts, "Up 5 lines " ))
+-- Better indenting in visual mode
+map('v', "<", "<gv", func.getOpts(opts, "Indent left and reselect" ))
+map('v', ">", ">gv", func.getOpts(opts, "Indent right and reselect" ))
 
 -- == Normal mode mappings ==
-map('n', "<leader>cl", "<cmd>nohlsearch<CR>", func.get_opts(opts, "Clear search highlights" ))
-map('n', "<leader>p", '"*p', func.get_opts(opts, "Clipboard Paste" ))
+map('n', "<leader>p", '"*p', func.getOpts(opts, "Clipboard Paste" ))
 map("x", "<leader>p", [["_dP]])
-map({ 'n', "v" }, "<leader>y", '"*y', func.get_opts(opts, "Clipboard Paste" ))
-map({ 'n', "v" },"<leader>dd", '"_d', func.get_opts(opts, "Delete without yanking" ))
-map('n', "<leader>n", 'viw*n', func.get_opts(opts, "Delete without yanking" ))
+map({ 'n', "v" }, "<leader>y", '"*y', func.getOpts(opts, "Clipboard Paste" ))
+map({ 'n', "v" },"<leader>dd", '"D', func.getOpts(opts, "Delete without yanking" ))
+
+map("n", "<leader>x", "<cmd>!chmod +x %<CR>", {})
+map('n', "<leader>r", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], {desc = "Rename selected word"})
+map("n", "gj", "<C-d>")
+map("n", "gk", "<C-u>")
 
 -- == Insert mode mappings ==
 -- map('i', "jf", "<Esc>", func.get_opts(opts, "Normal mode with jf" ))
@@ -104,85 +117,105 @@ map('n', "<leader>n", 'viw*n', func.get_opts(opts, "Delete without yanking" ))
 map('n', "<leader>ct", 'oTODO:<esc>:normal gcc<cr>A')
 
 -- Buffer navigation
-map('n', "<leader>bn", "<cmd>bnext<CR>", func.get_opts(opts, "Next buffer" ))
-map('n', "<leader>bp", "<cmd>bprevious<CR>", func.get_opts(opts, "Previous buffer" ))
-map('n', "<leader>bq", "<cmd>bdelete<CR>", func.get_opts(opts, "Delete buffer" ))
-map('n', "<leader>bv", "<cmd>buffers<CR>", func.get_opts(opts, "View buffer" ))
-map('n', "<leader>bo", "<cmd>%bd|e#<cr>", func.get_opts(opts, "Close all buffers and reload previous" ))
+map('n', "<leader>bn", "<cmd>bnext<CR>", func.getOpts(opts, "Next buffer" ))
+map('n', "<leader>bp", "<cmd>bprevious<CR>", func.getOpts(opts, "Previous buffer" ))
+map('n', "<leader>bq", "<cmd>bdelete<CR>", func.getOpts(opts, "Delete buffer" ))
+map('n', "<leader>bv", "<cmd>buffers<CR>", func.getOpts(opts, "View buffer" ))
+map('n', "<leader>bo", "<cmd>%bd|e#<cr>", func.getOpts(opts, "Close all buffers and reload previous" ))
+
+-- Surround mappings
+map("n", "s", function() sur.applySurround(false) end, { desc = "Surround word" })
+map("v", "s", function() sur.applySurround(true) end, { desc = "Surround selection" })
+-- functions
+map("n", "sf", function() sur.surroundFunction(false) end, { desc = "Surround with function" })
+map("v", "sf", function() sur.surroundFunction(true) end, { desc = "Surround with function" })
+-- delete surrounds
+map("n", "ds", sur.deleteSurround, { desc = "Delete surround" })
+-- changing surrounds
+map("n", "cs", sur.changeSurround, { desc = "Change surround" })
 
 -- Splitting & Resizing
-map('n', "<leader>v", "<cmd>vsplit<CR>", func.get_opts(opts, "Split window vertically" ))
-map('n', "<leader>h", "<cmd>split<CR>", func.get_opts(opts, "Split window horizontally" ))
-map('n', "<leader>+", "<cmd>resize +2<CR>", func.get_opts(opts, "Increase window height" ))
-map('n', "<leader>-", "<cmd>resize -2<CR>", func.get_opts(opts, "Decrease window height" ))
-map('n', "<leader><", "<cmd>vertical resize -2<CR>", func.get_opts(opts, "Decrease window width" ))
-map('n', "<leader>>", "<cmd>vertical resize +2<CR>", func.get_opts(opts, "Increase window width" ))
+map('n', "<leader>sv", "<cmd>vsplit<CR>", func.getOpts(opts, "Split window vertically" ))
+map('n', "<leader>sh", "<cmd>split<CR>", func.getOpts(opts, "Split window horizontally" ))
+map('n', "<leader>+", "<cmd>resize +2<CR>", func.getOpts(opts, "Increase window height" ))
+map('n', "<leader>-", "<cmd>resize -2<CR>", func.getOpts(opts, "Decrease window height" ))
+map('n', "<leader><", "<cmd>vertical resize -2<CR>", func.getOpts(opts, "Decrease window width" ))
+map('n', "<leader>>", "<cmd>vertical resize +2<CR>", func.getOpts(opts, "Increase window width" ))
 
 -- Move lines up/down
-map('n', "<up>", "<cmd>m .-2<CR>==", func.get_opts(opts, "Move line up" ))
-map('n', "<down>", "<cmd>m .+1<CR>==", func.get_opts(opts, "Move line down" ))
-map('v', "<up>", "<cmd>m '<-2<CR>gv=gv", func.get_opts(opts, "Move selection up" ))
-map('v', "<down>", "<cmd>m '>+1<CR>gv=gv", func.get_opts(opts, "Move selection down" ))
-
--- Better indenting in visual mode
-map('v', "<", "<gv", func.get_opts(opts, "Indent left and reselect" ))
-map('v', ">", ">gv", func.get_opts(opts, "Indent right and reselect" ))
+map('n', "<up>", ":m .-2<CR>==", func.getOpts(opts, "Move line up" ))
+map('n', "<down>", ":m .+1<CR>==", func.getOpts(opts, "Move line down" ))
+map('v', "<up>", ":m '<-2<CR>gv=gv", func.getOpts(opts, "Move selection up" ))
+map('v', "<down>", ":m '>+1<CR>gv=gv", func.getOpts(opts, "Move selection down" ))
 
 -- Better J behavior
-map('n', "J", "mzJ`z", func.get_opts(opts, "Join lines and keep cursor position" ))
+map('n', "J", "mzJ`z", func.getOpts(opts, "Join lines and keep cursor position" ))
 
 -- ==== Terminal mappings ===
-map('n', '<leader>tt', term.toggle_terminal, func.get_opts(opts, 'Toggle bottom terminal'))
-map('n', '<leader>tg',function () term.toggle_terminal("gemini")end, func.get_opts(opts, 'Toggle bottom terminal'))
-map('n', '<leader>th',function () term.toggle_terminal("cd")end, func.get_opts(opts, 'Toggle bottom terminal'))
+map('n', '<leader>tt', term.toggleTerminal, func.getOpts(opts, 'Toggle bottom terminal'))
+map('n', '<leader>tg',function () term.toggleTerminal("gemini")end, func.getOpts(opts, 'Toggle bottom terminal'))
+map('n', '<leader>th',function () term.toggleTerminal("cd")end, func.getOpts(opts, 'Toggle bottom terminal'))
 -- map('nt', '<Esc>', term.toggle_terminal, func.get_opts(opts, 'Toggle bottom terminal'))
-map('n', '<leader>tf', '<cmd>ToggleTerm direction=float<CR>', func.get_opts(opts, 'Toggle floating Terminal'))
-map('n', '<leader>tb', '<cmd>ToggleTerm direction=tab<CR>', func.get_opts(opts, 'Toggle terminal on another tab'))
-map('t', 'qq', [[<C-\><C-n>]], func.get_opts(opts, 'Close on terminal mode'))
+map('n', '<leader>tf', '<cmd>ToggleTerm direction=float<CR>', func.getOpts(opts, 'Toggle floating Terminal'))
+map('n', '<leader>tb', '<cmd>ToggleTerm direction=tab<CR>', func.getOpts(opts, 'Toggle terminal on another tab'))
+map('t', 'qq', [[<C-\><C-n>]], func.getOpts(opts, 'Close on terminal mode'))
 
 
 -- LSP actions
-map('n', 'K', lsp.hover, func.get_opts(opts, 'LSP Hover' ))
-map('n', 'gd', lsp.definition, func.get_opts(opts, 'LSP Definition' ))
-map('n', 'gr', lsp.references, func.get_opts( opts,'LSP References' ))
-map('n', '<leader>la', lsp.code_action, func.get_opts(opts, 'LSP Code Action' ))
-map('n', '<leader>lr', lsp.rename, func.get_opts( opts,'LSP Rename' ))
-map("i", "<up>", lsp.signature_help, func.get_opts( opts,'C-h is set as left on my wezterm config' ))
-map("n", "<leader>ws",  lsp.workspace_symbol, func.get_opts(opts,' Search workspace symbols') )
-map("n", "<leader>d", diag.open_float, func.get_opts(opts,'Open diagnostic\'s floating Window'))
+map('n', 'K', lsp.hover, func.getOpts(opts, 'LSP Hover' ))
+map('n', 'gd', lsp.definition, func.getOpts(opts, 'LSP Definition' ))
+map('n', 'gr', lsp.references, func.getOpts( opts,'LSP References' ))
+map('n', '<leader>la', lsp.code_action, func.getOpts(opts, 'LSP Code Action' ))
+map('n', '<leader>lr', lsp.rename, func.getOpts( opts,'LSP Rename' ))
+map("i", "<up>", lsp.signature_help, func.getOpts( opts,'C-h is set as left on my wezterm config' ))
+map("n", "<leader>ws",  lsp.workspace_symbol, func.getOpts(opts,' Search workspace symbols') )
+map("n", "<leader>d", diag.open_float, func.getOpts(opts,'Open diagnostic\'s floating Window'))
 
 -- Diagnostics
 map("n", "[d",  diag.get_prev)
 map("n", "]d", diag.get_next)
-map('n', '<leader>ld', func.toggle_diagnostics, func.get_opts(opts, 'Toggle Diagnostics' ))
+map('n', '<leader>ld', func.toggleDiagnostics, func.getOpts(opts, 'Toggle Diagnostics' ))
 
 -- Zen Mode
-map('n', '<leader>lz', func.toggle_zen_mode, func.get_opts(opts, 'Toggle Zen Mode' ))
+map('n', '<leader>lz', func.toggleZenMode, func.getOpts(opts, 'Toggle Zen Mode' ))
 
 -- Toggle UI elements
-map('n', '<leader>ls', func.toggle_statusline, func.get_opts(opts,'Toggle Statusline' ))
-map('n', '<leader>lt', func.toggle_tabline, func.get_opts(opts,'Toggle Tabline'))
-map('n', '<leader>lc', func.toggle_signcolumn, func.get_opts(opts,'Toggle Signcolumn'))
-map('n', '<leader>lw', '<cmd>set wrap!<cr>',func.get_opts(opts,'Toggle Signcolumn'))
-map('n', '<leader>li', func.toggle_inlay_hints, func.get_opts(opts,'Toggle Inlay Hints'))
+map('n', '<leader>ls', func.toggleStatusline, func.getOpts(opts,'Toggle Statusline' ))
+map('n', '<leader>lt', func.toggleTabline, func.getOpts(opts,'Toggle Tabline'))
+map('n', '<leader>lc', func.toggleSigncolumn, func.getOpts(opts,'Toggle Signcolumn'))
+map('n', '<leader>lw', '<cmd>set wrap!<cr>',func.getOpts(opts,'Toggle Signcolumn'))
+map('n', '<leader>li', func.toggleInlayHints, func.getOpts(opts,'Toggle Inlay Hints'))
+-- highlights
+map('n', '<leader>h', func.toggleWordHighlight, {desc = "Toggle Word Highlight"})
+map('n', "<leader>cl", func.toggleHighlightSearch, func.getOpts(opts, "Clear search highlights" ))
 
  -- toggle number / relative line number 
-map({ 'n', 'v' }, '<leader>lrn', func.toggle_relativenumber, func.get_opts(opts, ' Toggle relativenumber'))
-map({ 'n', 'v' }, '<leader>ln', func.toggle_number, func.get_opts(opts, 'Toggle relativenumber'))
+map({ 'n', 'v' }, '<leader>lrn', func.toggleRelativenumber, func.getOpts(opts, ' Toggle relativenumber'))
+map({ 'n', 'v' }, '<leader>ln', func.toggleNumber, func.getOpts(opts, 'Toggle relativenumber'))
 
--- Snippet 
-map('i', '<Right>', func.snippet_jump_next, func.get_opts(expr_opts, 'Jump to the next arg on snippets'))
-map('i', '<Left>', func.snippet_jump_prev, func.get_opts(expr_opts, ' Jump to the previous arg on snippets'))
-map('i', '<Esc>', func.snippet_stop, func.get_opts(opts, 'Close snippet'))
+-- Snippets
+map('i', '<Right>', func.snippetJumpNext, func.getOpts(expr_opts, 'Jump to the next arg on snippets'))
+map('i', '<Left>', func.snippetJumpPrev, func.getOpts(expr_opts, ' Jump to the previous arg on snippets'))
+map('i', '<Esc>', func.snippetStop, func.getOpts(opts, 'Close snippet'))
+map("n", "<leader>ee", "oif err != nil {<CR>}<Esc>Oreturn err<Esc>")
 
 -- debug
 map({ 'v', 'n' }, '<leader>in', ':Inspect<cr>')
 map('v', '<leader>ldb', 'y:lua print(<C-r>")<cr>')
 map('n', '<leader>cn', ':colorscheme nightfly<cr>')
 
-map( "n", "<leader>tx", term.toggle_terminal)
+map( "n", "<leader>tx", term.toggleTerminal)
 
 -- teste
-vim.keymap.set('n', '<leader>h', func.toggle_word_highlight)
-vim.keymap.set('n', '<leader>hx', fzf.fuzzy_jump)
+map('n', '<leader>fx', fzf.fuzzyJump)
+
+
+
+
+
+-- Keymap execution
+
+
+
+
 

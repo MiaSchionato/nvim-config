@@ -2,8 +2,8 @@ local M = {}
 local func = require('configs.functions')
 local cache_dir = vim.fn.stdpath("cache") if vim.fn.isdirectory(cache_dir) == 0 then vim.fn.mkdir(cache_dir, "p") end
 
-function M.fuzzy_logic(opts)
-  local win,buf = func.create_window(opts.title, opts.ratio)
+function M.fuzzyLogic(opts)
+  local win,buf = func.createWindow(opts.title, opts.ratio)
   local temp = vim.fn.stdpath("cache") .. "/opts_run"
   vim.api.nvim_set_option_value('bufhidden', 'wipe', {buf = buf})
   vim.cmd(string.format("terminal %s > %s", opts.cmd, temp))
@@ -34,12 +34,12 @@ function M.fuzzy_logic(opts)
   vim.cmd("startinsert")
 end
 
-function M.fuzzy_search(path)
+function M.fuzzySearch(path)
   if path == nil then path = "/Users/mia/" end
   local fd = "fd --hidden --type file . --strip-cwd-prefix --base-directory  "
   local fzf = "fzf --keep-right --tiebreak=end"
 
-  M.fuzzy_logic({
+  M.fuzzyLogic({
     title = "Fuzzy Search",
     ratio = 0.6,
     cmd = string.format("%s %s | %s", fd, path, fzf),
@@ -52,11 +52,11 @@ function M.fuzzy_search(path)
 end
 
 
-function M.fuzzy_grep(path)
+function M.fuzzyGrep(path)
   local rg = "rg --column --line-number --no-heading --color=always --smart-case -- . "
   local fzf = "fzf --ansi --delimiter : --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' --preview-window 'up,60\\%,border-bottom,+{2}+3/3'"
 
-  M.fuzzy_logic({
+  M.fuzzyLogic({
     title = "Fuzzy Grep",
     ratio = 0.8,
     cmd = string.format("%s %s | %s",rg,path,fzf),
@@ -71,10 +71,10 @@ function M.fuzzy_grep(path)
   })
 end
 
-function M.fuzzy_help()
+function M.fuzzyHelp()
   local doc_path = vim.fn.expand("$VIMRUNTIME/doc/")
 
-  M.fuzzy_logic({
+  M.fuzzyLogic({
     title = "Fuzzy help",
     ratio = 0.6,
     cmd = string.format("ls %s | fzf", doc_path),
@@ -85,13 +85,13 @@ function M.fuzzy_help()
   })
 end
 
-function M.fuzzy_git()
+function M.fuzzyGit()
   local path = vim.fn.expand("%:p:h")
 
   local fzf = "fzf --ansi --preview 'git show --color=always {1}' --preview-window 'up,60\\%,wrap,border-bottom'"
   local git = "git log --oneline --color=always "
 
-  M.fuzzy_logic({
+  M.fuzzyLogic({
     title = "Fuzzy Git log",
     ratio = 0.8,
     cmd = string.format("cd %s && %s | %s",path, git, fzf),
@@ -103,13 +103,13 @@ end
 
 
 -- TODO: finish this func
-function M.fuzzy_git_grep()
+function M.fuzzyGitGrep()
   local temp = vim.fn.stdpath("cache") .. "/git_log"
   vim.cmd(string.format("!  git log --oneline > %s", temp))
-  M.fuzzy_grep(temp)
+  M.fuzzyGrep(temp)
 end
 
-function M.fuzzy_jump()
+function M.fuzzyJump()
   -- Get tablet contet
   local jumplist = vim.fn.getjumplist()
   local jumps = {}
@@ -129,7 +129,7 @@ function M.fuzzy_jump()
   end
 
   local fzf = "fzf --ansi --delimiter : --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' --preview-window 'up,60\\%,border-bottom,+{2}+3/3'"
-  M.fuzzy_logic({
+  M.fuzzyLogic({
     title = "fuzzy jumps",
     ratio = 0.8,
     cmd = string.format("cat %s | %s", temp, fzf),
@@ -145,7 +145,7 @@ function M.fuzzy_jump()
 end
 
 
-function M.fuzzy_buffers()
+function M.fuzzyBuffers()
   -- Get table contet
   local buffer_list = vim.api.nvim_list_bufs()
   local buffers = {}
@@ -165,7 +165,7 @@ function M.fuzzy_buffers()
     f:close()
   end
 
-  M.fuzzy_logic({
+  M.fuzzyLogic({
     title = "Fuzzy buffers",
     ratio = 0.7,
     cmd = string.format("cat %s | fzf --keep-right --tiebreak=end", temp),
@@ -177,7 +177,7 @@ function M.fuzzy_buffers()
 
 end
 
-function M.fuzzy_oldfiles()
+function M.fuzzyOldfiles()
   -- Get table content
   local oldfiles = vim.tbl_filter(function (f)
     return vim.fn.filereadable(f) == 1
@@ -192,7 +192,7 @@ function M.fuzzy_oldfiles()
   end
 
   -- Handle to the logic function
-  M.fuzzy_logic({
+  M.fuzzyLogic({
       title = "Oldfiles",
       ratio = 0.7,
       cmd = string.format("cat %s | fzf",temp),

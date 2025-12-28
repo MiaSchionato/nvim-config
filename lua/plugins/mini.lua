@@ -4,8 +4,8 @@ vim.pack.add({
 })
 
 -- require('mini.icons').setup()
-require('mini.surround').setup()
-require('mini.pairs').setup()
+-- require('mini.surround').setup()
+-- require('mini.pairs').setup()
 require('mini.extra').setup()
 -- require('mini.statusline').setup()
 require('mini.files').setup()
@@ -115,67 +115,6 @@ require('mini.notify').setup({
   },
 })
 
--- Mini Pick 
--- local Pick = require('mini.pick')
--- Pick.setup()
---
--- function M.nvimConfig(opts)
--- Pick.builtin.files(
---   { tool = 'fd' },
---   { source = {
---     cwd = vim.fn.stdpath('config'), -- Automatically finds your ~/.config/nvim
---     name = 'Nvim Config'
---   }
--- })
--- end
---
--- function M.Projects(opts)
--- Pick.builtin.files(
---   { tool = 'fd' },
---   {source = {
---     cwd =  '/Users/mia/Projects/',
---     name = 'Projects Directory'
---   }
--- })
---
--- end
---
--- function M.Languages(opts)
--- Pick.builtin.files(
---   { tool = 'fd' },
---   {source = {
---     cwd =  '/Users/mia/Documents/my_devops_journey/Languages/',
---     name = 'Languages Directory'
---   }
--- })
--- end
---
--- function M.Configs(opts)
--- Pick.builtin.files(
---   { tool = 'fd' },
---   { source = {
---     cwd =  '/Users/mia/.config/',
---     name = 'DotConfig Directory'
---   }
--- })
--- end
---
--- function M.Home(opts)
--- Pick.builtin.files( { tool = 'fd' }, {source = { cwd =  '/Users/mia/',
---     name = 'Home Directory'
---   }
--- })
--- end
---
--- function M.CurrentPath(opts)
--- Pick.builtin.files(
---   { tool = 'fd' },
---   {source = {
---     cwd = vim.fn.expand('%:p:h:h'),
---     name = 'Current Directory'
---   }
--- })
--- end
 
 -- Mini Snippets
 --

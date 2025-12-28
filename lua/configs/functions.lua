@@ -23,7 +23,7 @@ function M.MyTabline()
 end
 
 local zen_mode_enabled = false
-function M.toggle_zen_mode(show_notify)
+function M.toggleZenMode(show_notify)
   show_notify = show_notify ~= false -- Default to true if not explicitly false
   zen_mode_enabled = not zen_mode_enabled
 
@@ -38,7 +38,7 @@ function M.toggle_zen_mode(show_notify)
   vim.wo.relativenumber = not zen_mode_enabled
   vim.wo.number = not zen_mode_enabled
   vim.o.showtabline = zen_mode_enabled and 0 or 1
-  vim.o.laststatus = zen_mode_enabled and 0 or 2 -- Assuming 2 is the default for mini.statusline
+  vim.o.laststatus = zen_mode_enabled and 0 or 2
 
   if show_notify then
     if zen_mode_enabled then
@@ -50,7 +50,7 @@ function M.toggle_zen_mode(show_notify)
 end
 
 -- Dedicated function to apply the dashboard's visual style.
-function M.apply_dashboard_style()
+function M.applyDashboardStyle()
   vim.wo.relativenumber = false
   vim.wo.number = false
   vim.wo.signcolumn = 'no'
@@ -59,16 +59,16 @@ function M.apply_dashboard_style()
 end
 
 -- Dedicated function to reset the dashboard's visual style.
-function M.reset_dashboard_style()
+function M.resetDashboardStyle()
   vim.wo.relativenumber = true
   vim.wo.number = true
   vim.wo.signcolumn = 'auto'
   vim.o.showtabline = 1
-  vim.o.laststatus = 2 -- Assuming 2 is the default for mini.statusline
+  vim.o.laststatus = 2
 end
 
 
-function M.toggle_statusline()
+function M.toggleStatusline()
   if vim.o.laststatus == 0 then
     vim.o.laststatus = 2
   else
@@ -76,7 +76,7 @@ function M.toggle_statusline()
   end
 end
 
-function M.toggle_tabline()
+function M.toggleTabline()
     if vim.o.showtabline == 1 then
         vim.o.showtabline = 0
     else
@@ -84,7 +84,7 @@ function M.toggle_tabline()
     end
 end
 
-function M.toggle_number()
+function M.toggleNumber()
   if vim.o.number == true then
     vim.o.number = false
   else
@@ -92,11 +92,11 @@ function M.toggle_number()
   end
 end
 
-function M.toggle_relativenumber()
+function M.toggleRelativenumber()
   vim.opt.relativenumber = not vim.opt.relativenumber:get()
 end
 
-function M.toggle_signcolumn()
+function M.toggleSigncolumn()
   if vim.wo.signcolumn:match('^yes') or vim.wo.signcolumn:match('^auto') then
     vim.wo.signcolumn = 'no'
   else
@@ -104,13 +104,13 @@ function M.toggle_signcolumn()
   end
 end
 
-function M.toggle_diagnostics()
+function M.toggleDiagnostics()
   vim.diagnostic.config({
     virtual_text = not vim.diagnostic.config().virtual_text
   })
 end
 
-function M.snippet_jump_next()
+function M.snippetJumpNext()
   if mini.session.get() then
     return '<Cmd>lua MiniSnippets.session.jump("next")<CR>'
   else
@@ -118,7 +118,7 @@ function M.snippet_jump_next()
   end
 end
 
-function M.snippet_jump_prev()
+function M.snippetJumpPrev()
   if mini.session.get() then
     return '<Cmd>lua MiniSnippets.session.jump("prev")<CR>'
   else
@@ -126,28 +126,29 @@ function M.snippet_jump_prev()
   end
 end
 
-function M.snippet_stop()
+function M.snippetStop()
   if MiniSnippets.session.get() then
     MiniSnippets.session.stop()
   end
   vim.cmd.stopinsert()
 end
 
-function M.toggle_inlay_hints()
+-- TODO: not working
+function M.toggleInlayHints()
   vim.lsp.inlay_hint.enable = not vim.lsp.inlay_hint.is_enabled()
 end
 
-function M.get_opts(base_opts, desc)
+function M.getOpts(base_opts, desc)
   return vim.tbl_extend("force", base_opts, {desc = desc})
 end
 
-function M.minifiles_toggle()
+function M.minifilesToggle()
   if not MiniFiles.close() then
     MiniFiles.open(vim.api.nvim_buf_get_name(0))
   end
 end
 
-function M.create_window(title, ratio)
+function M.createWindow(title, ratio)
   local buf = vim.api.nvim_create_buf(false, true)
   local height = math.ceil(vim.o.lines * ratio)
   local width = math.ceil(vim.o.columns * ratio)
@@ -169,27 +170,23 @@ function M.create_window(title, ratio)
   return win, buf
 end
 
-local match_id = {}
-function M.toggle_word_highlight()
-    local word = vim.fn.expand('<cword>')
-    if match_id[word] ~= nil then
-        pcall(vim.fn.matchdelete, match_id[word])
-        match_id[word] = nil
-        vim.fn.setreg("/", "")
-    else
-        if word == "" then return end
-
-        local pattern = [[\<]] .. word .. [[\>]]
-        match_id[word] = vim.fn.matchadd('Search', pattern)
-        vim.fn.setreg("/", pattern)
-    end
+function M.toggleHighlightSearch()
+  local is_active = vim.opt.hlsearch:get()
+  vim.opt.hlsearch = not is_active
 end
 
--- TODO: Implement git diff toggle
+function M.toggleWordHighlight()
+  local is_active = vim.opt.hlsearch:get()
+  vim.opt.hlsearch = not is_active
+  vim.cmd('noautocmd normal! viw"vy ')
+  local text = vim.fn.getreg('v')
+  vim.fn.setreg('/', text)
+end
+
+-- Git Diff
 local namespace_id =vim.api.nvim_create_namespace("git-diff")
 local diff_active = false
-
-function M.git_diff_toggle()
+function M.gitDiffToggle()
   if diff_active then
     vim.api.nvim_buf_clear_namespace(0,namespace_id,0,-1)
     diff_active = false
@@ -220,9 +217,8 @@ local current_line = 0
 
   for i = 1, #output do
     local line = output[i]
-
-    -- local start_line = line:match("^@@%s*%-?%d*,?%d*%s+%+(%d+),?%d*%s*@@")
     local start_line = line:match("^@@.-%+(%d+)")
+
     if start_line then
       current_line = tonumber(start_line) or 0
 
@@ -230,12 +226,16 @@ local current_line = 0
       vim.api.nvim_buf_set_extmark(0, namespace_id, current_line - 1, 0, {
         line_hl_group = "DiffAdd",
         end_row = current_line, -- covers whole line
+        sign_text = "+",
+        sign_hl_group = "GitSignAdd",
+        priority = 100,
       })
       current_line = current_line + 1
 
     elseif line:sub(1,1) == "-" and line:sub(1, 3) ~= "---" then
       local deleted_text = line:sub(2)
       vim.api.nvim_buf_set_extmark(0, namespace_id, math.max(0, current_line -1), 0, {
+        sign_text = " ",
         virt_lines = {{{" - " .. deleted_text, "DiffDelete"}}},
         virt_lines_above = true,
       })

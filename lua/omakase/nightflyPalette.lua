@@ -74,6 +74,9 @@ end
 
 
 local groups = {
+  -- Misc
+  ColorColumn = { link = "String" },
+  --
   --Custom Statusline
   BlueMode =  { bg = blue, fg = dark_blue },
   EmeraldMode =  { bg = emerald, fg = dark_blue },
@@ -99,7 +102,7 @@ local groups = {
   Label = {fg = malibu },
   Operator = {fg = watermelon },
   Repeat = {fg = violet },
-  CurSearch = { bg = orange, fg = black },
+  CurSearch = { bg = malibu, fg = black },
   IncSearch = { bg = peach, fg = black },
   Special = {fg = watermelon },
   Statement = { fg = violet },
@@ -180,6 +183,10 @@ local groups = {
 
   -- Misc
   Directory = {bg = none, fg = blue},
+
+  -- Git
+ GitSignAdd = { fg = "#7efb67", bold = true },
+ GitSignDel = { fg = "#ff5189", bold = true },
 
 --"Neovim Tree-sitter
   ["@attribute"] = { fg= blue },
@@ -274,8 +281,8 @@ end
   terminal                   = { icon = " ", hl = 'IconsGrey'   },
 
   -- Default icon
- default_icon        = { icon = '󰀵', hl = 'IconsBlue'}
- -- default_icon = { icon = "󰈚", hl = "StatusLine" }
+ default_icon        = { icon = '󰀵', hl = 'IconsBlue'},
+ -- default_icon = { icon = "󰈚", hl = "StatusLine" },
 }
 
 return M

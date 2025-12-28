@@ -5,7 +5,7 @@ local M = {}
 local terminals = {}
 local func = require('configs.functions')
 
-function M.toggle_terminal(cmd)
+function M.toggleTerminal(cmd)
   cmd = cmd or "default"
 
   local term = terminals[cmd]
@@ -20,7 +20,7 @@ function M.toggle_terminal(cmd)
   -- If a valid buffer for this command exists, re-open it in a new window.
   if term and term.buf and vim.api.nvim_buf_is_valid(term.buf) then
     local buf = term.buf
-    local win, _ = func.create_window(" ", 0.8)
+    local win, _ = func.createWindow(" ", 0.8)
     vim.api.nvim_win_set_buf(win, buf)
     term.win = win
     vim.api.nvim_set_current_win(win)
@@ -38,7 +38,7 @@ function M.toggle_terminal(cmd)
   end
 
   -- Create a floating window, then switch to it.
-  local new_win, _ = func.create_window(" ", 0.8)
+  local new_win, _ = func.createWindow(" ", 0.8)
   vim.api.nvim_set_current_win(new_win)
 
   -- Set the working directory for this window only, then open the terminal.
