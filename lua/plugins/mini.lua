@@ -3,22 +3,6 @@ vim.pack.add({
 	'https://github.com/nvim-mini/mini.nvim',
 })
 
--- require('mini.icons').setup()
--- require('mini.surround').setup()
--- require('mini.pairs').setup()
-require('mini.extra').setup()
--- require('mini.statusline').setup()
-require('mini.files').setup()
-
--- Mini.ai (around and inside text objects)
-local miniAi = require('mini.ai')
-miniAi.setup({
-    custom_textobjects = {
-    f = miniAi.gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }),
-    c = miniAi.gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }),
-    },
-})
-
 -- completion (load and config native nvim completion)
 require('mini.completion').setup()
 
@@ -124,46 +108,5 @@ require('mini.snippets').setup({
   },
 })
 require('mini.snippets').start_lsp_server()
-
-
--- Mini Splitjoint
---
---
-require('mini.splitjoin').setup({
-  -- Module mappings. Use `''` (empty string) to disable one.
-  -- Created for both Normal and Visual modes.
-  mappings = {
-    toggle = 'gS',
-    split = '',
-    join = '',
-  },
-
-  -- Detection options: where split/join should be done
-  detect = {
-    -- Array of Lua patterns to detect region with arguments.
-    -- Default: { '%b()', '%b[]', '%b{}' }
-    brackets = nil,
-
-    -- String Lua pattern defining argument separator
-    separator = ',',
-
-    -- Array of Lua patterns for sub-regions to exclude separators from.
-    -- Enables correct detection in presence of nested brackets and quotes.
-    -- Default: { '%b()', '%b[]', '%b{}', '%b""', "%b''" }
-    exclude_regions = nil,
-  },
-
-  -- Split options
-  split = {
-    hooks_pre = {},
-    hooks_post = {},
-  },
-
-  -- Join options
-  join = {
-    hooks_pre = {},
-    hooks_post = {},
-  },
-})
 
 return M

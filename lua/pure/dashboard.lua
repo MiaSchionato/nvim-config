@@ -102,18 +102,9 @@ function M.drawDashboard()
   end
 
   local buf = vim.api.nvim_create_buf(false, true)
-  local header = {
-    [[]],
-    [[   _   _  ____   ___  __     __ ___  __  __ ]],
-    [[  | \ | ||  __| / _ \ \ \   / /|_ _||  \/  |]],
-    [[  |  \| || |__ | | | | \ \ / /  | | | |\/| |]],
-    [[  | |\  ||  __|| |_| |  \ V /   | | | |  | |]],
-    [[  |_| \_||____| \___/    \_/   |___||_|  |_|]],
-    [[]],
-    [[       [n] New File    [q] Quit    [u] Update]],
-    [[]],
-  }
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, header)
+
+  local header = require('pure.ascii')
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, header.saturn)
 
   -- Set buffer options
   vim.bo[buf].filetype = 'dashboard'

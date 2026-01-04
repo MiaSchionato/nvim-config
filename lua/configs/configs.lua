@@ -2,7 +2,9 @@ local o = vim.opt
 -- Tab display settings
 o.showtabline = 1  -- Always show tabline (0=never, 1=when multiple tabs, 2=always)
 o.tabline = "%!v:lua.require('configs.functions').MyTabline()"
-o.statusline = "%!v:lua.require('omakase.statusline').MyStatusLine()"
+o.statusline = "%!v:lua.require('pure.statusline').MyStatusLine()"
+vim.opt.showcmd = true
+vim.opt.showcmdloc = "statusline"
 
 -- Basic settings
 o.number = true                              -- Line numbers
@@ -35,9 +37,10 @@ o.cmdheight = 0                              -- Command line height (essentially
 o.completeopt = "menuone,noinsert,noselect"  -- Completion options
 o.showmode = false                           -- Don't show mode in command line
 o.pumheight = 10                             -- Popup menu height
-o.pumblend = 10                              -- Popup menu transparency
-o.winblend = 0                               -- Floating window transparency
-o.conceallevel= 0                           -- Don't hide markup
+o.pumborder = "rounded"                      -- Popup menu border style
+-- o.pumblend = 30                              -- Popup menu transparency
+-- o.winblend = 30                              -- Floating window transparency
+o.conceallevel= 0                            -- Don't hide markup
 o.concealcursor = ""                         -- Don't hide cursor line markup
 o.lazyredraw = true                          -- Don't redraw during macros
 o.signcolumn = "auto"                        -- Show signcolumn automatically
@@ -45,6 +48,7 @@ o.signcolumn = "auto"                        -- Show signcolumn automatically
 -- File handling
 o.undofile = true                            -- Persistent undo
 o.undodir = vim.fn.expand("~/.config/nvim/undodir")  -- Undo directory
+o.swapfile = false
 o.updatetime = 50                           -- Faster completion
 o.timeoutlen = 500                           -- Key timeout duration
 o.ttimeoutlen = 0                            -- Key code timeout
@@ -72,3 +76,18 @@ o.splitright = true                          -- Vertical splits go right
 o.redrawtime = 10000
 o.maxmempattern = 20000
 
+-- Foldings
+o.foldtext = "v:lua.PureFoldText()"
+o.fillchars = { fold = " " }
+o.foldlevel = 99
+o.foldlevelstart = 99
+o.foldenable = true
+o.foldcolumn = "0"
+o.foldmethod = "indent"
+
+-- Netrw
+vim.g.netrw_winsize = 25
+vim.g.netrw_banner = 0
+vim.g.netrw_keepdir = 0
+o.autochdir = true
+o.winblend = 100

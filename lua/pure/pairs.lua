@@ -54,6 +54,7 @@ local function delete_pair()
         vim.api.nvim_buf_set_text(0, row, col, row, col + 1, {})
         vim.api.nvim_buf_set_text(0, p_row, p_col, p_row, p_col + 1, {})
       end
+      vim.notify('pair deleted')
       return
     end
   end

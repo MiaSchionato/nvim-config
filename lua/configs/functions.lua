@@ -142,12 +142,6 @@ function M.getOpts(base_opts, desc)
   return vim.tbl_extend("force", base_opts, {desc = desc})
 end
 
-function M.minifilesToggle()
-  if not MiniFiles.close() then
-    MiniFiles.open(vim.api.nvim_buf_get_name(0))
-  end
-end
-
 function M.createWindow(title, ratio)
   local buf = vim.api.nvim_create_buf(false, true)
   local height = math.ceil(vim.o.lines * ratio)
@@ -183,7 +177,10 @@ function M.toggleWordHighlight()
   vim.fn.setreg('/', text)
 end
 
+-- TODO: Move this func to its own file to extend functionality
 -- Git Diff
+
+-- TODO:Add signcolumn always shown ()
 local namespace_id =vim.api.nvim_create_namespace("git-diff")
 local diff_active = false
 function M.gitDiffToggle()
@@ -194,26 +191,26 @@ function M.gitDiffToggle()
     return
   end
 
-local buf_path = vim.api.nvim_buf_get_name(0)
-if buf_path == "" then return end
-local file_path = vim.fn.fnamemodify(buf_path, ":h")
+  local buf_path = vim.api.nvim_buf_get_name(0)
+  if buf_path == "" then return end
+  local file_path = vim.fn.fnamemodify(buf_path, ":h")
 
 
-local cmd = string.format("git -C %s diff -U0 --no-color -- %s",
-vim.fn.shellescape(file_path), -- buff parent dir
-vim.fn.shellescape(vim.fn.fnamemodify(buf_path, ":t"))
-)
+  local cmd = string.format("git -C %s diff -U0 --no-color -- %s",
+  vim.fn.shellescape(file_path), -- buff parent dir
+  vim.fn.shellescape(vim.fn.fnamemodify(buf_path, ":t"))
+  )
 
-local output = vim.fn.systemlist(cmd)
+  local output = vim.fn.systemlist(cmd)
 
-if not output or #output == 0 then
-  vim.notify("Git diff: nothing to show")
-  return
-end
+  if not output or #output == 0 then
+    vim.notify("Git diff: nothing to show")
+    return
+  end
 
-diff_active = true
-vim.notify("Git diff activated")
-local current_line = 0
+  diff_active = true
+  vim.notify("Git diff activated")
+  local current_line = 0
 
   for i = 1, #output do
     local line = output[i]
@@ -243,4 +240,62 @@ local current_line = 0
     end
   end
 end
+
+function M.toggleCheckbox()
+  local line = vim.api.nvim_get_current_line()
+  local new_line = ""
+  if line:find("%[%s?%]") then
+    new_line = line:gsub("%[%s?%]", "[x]", 1)
+  elseif line:find("%[[xX]%]") then
+    new_line = line:gsub("%[[xX]%]", "[ ]", 1)
+  elseif line:find("^%s*-%s") then
+    new_line = line:gsub("(-%s)", "- [ ] ", 1)
+  else
+    return
+  end
+  vim.api.nvim_set_current_line(new_line)
+end
+
+function M.toggleExplore()
+  if vim.bo.filetype == "netrw" then
+    vim.cmd("Rexplore")
+  else
+    vim.cmd("Ex")
+  end
+end
+
+function M.smartQuote()
+  local line = vim.api.nvim_get_current_line()
+  local col = vim.api.nvim_win_get_cursor(0)[2] -- column
+
+  local beforeCursor = line:sub(1, col + 1)
+  local _, doubleQuotes= beforeCursor:gsub('"', "")
+  local _, singleQuotes = beforeCursor:gsub("'", "")
+
+  -- if there's an odd number of quotes before the cursor, means the cursor are inside a quote
+  if doubleQuotes % 2 ~= 0 then return '"' end
+  if singleQuotes % 2 ~= 0 then return "'" end
+
+  -- if both even number, change the next quotes from the cursor
+  local afterCursor = line:sub(col+2)
+  local nextDoble = afterCursor:find('"') or 999
+  local nextSingle = afterCursor:find("'") or 999
+
+  if nextSingle < nextDoble then
+    return "'"
+  else
+    return '"'
+  end
+end
+
+function M.toggleCopilot()
+  if vim.g.copilot_enabled == true then
+    vim.g.copilot_enabled = false
+    vim.notify("Copilot Disabled")
+  else
+    vim.g.copilot_enabled = true
+    vim.notify("Copilot Enabled")
+  end
+end
+
 return M

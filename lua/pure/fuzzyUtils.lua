@@ -203,4 +203,156 @@ function M.fuzzyOldfiles()
     })
 
 end
+
+function M.fuzzyColorscheme()
+  local schemes = vim.fn.getcompletion("", "color")
+  local temp = vim.fn.stdpath("cache") .. "/colorscheme_list"
+  local f = io.open(temp, "w")
+  if f then
+    f:write(table.concat(schemes, "\n"))
+    f:close()
+  end
+
+  -- Handle to the logic function
+  M.fuzzyLogic({
+      title = "Fuzzy Search",
+      ratio = 0.7,
+      cmd = string.format("cat %s | fzf",temp),
+      callback = function(theme)
+        vim.cmd("colorscheme "  .. vim.fn.fnameescape(theme))
+        vim.g.MY_THEME = theme
+      end
+    })
+end
+
+function M.setup()
+  vim.ui.select = function(items, opts, selected)
+    opts = opts or {}
+    if #items == 0 then
+      selected(nil, nil)
+      return
+    end
+
+    local choices = {}
+    for i, item in ipairs(items) do -- Check if table or plain text
+      if opts.format_item then
+        choices[i] = opts.format_item(item)
+      else
+        choices[i] = tostring(item)
+      end
+    end
+
+    local temp = vim.fn.stdpath("cache") .. "/ui_select"
+    local f = io.open(temp, "w")
+    if not f then
+      vim.notify('Error creating temp file', 4)
+      return
+    end
+    f:write(table.concat(choices, "\n"))
+    f:close()
+
+    M.fuzzyLogic({
+      title = opts.prompt or "Select",
+      ratio = 0.7,
+      cmd = string.format("cat %s | fzf", temp),
+      callback = function(selection)
+        os.remove(temp)
+        if selection and selection ~= "" then
+          local selected_idx
+          for i, choice in ipairs(choices) do
+            if choice == selection then
+              selected_idx = i
+              break
+            end
+          end
+          if selected_idx then
+            selected(items[selected_idx], selected_idx)
+          else
+            selected(nil, nil)
+          end
+        else
+          selected(nil, nil)
+        end
+      end
+    })
+  end
+
+  vim.ui.input = function(opts, callback)
+    opts = opts or {}
+    local prompt = opts.prompt or "Input: "
+    local win, buf = func.createWindow(prompt, 0.8)
+    vim.api.nvim_win_set_height(win, 1)
+
+    if opts.default then
+      vim.api.nvim_buf_set_lines(buf, 0, -1, false, {opts.default})
+      vim.cmd("startinsert!")
+    end
+
+    local confirmed = false
+
+    local function submit()
+      local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+      confirmed = true
+      local input = table.concat(lines, "\n")
+      vim.api.nvim_win_close(win, true)
+      vim.api.nvim_buf_delete(buf, { force = true })
+      callback(input)
+    end
+
+    local function cancel()
+      confirmed = false
+      vim.api.nvim_win_close(win, true)
+      vim.api.nvim_buf_delete(buf, { force = true })
+      callback(nil)
+    end
+
+    local opts_map = {noremap = true, silent = true, nowait = true, buffer = buf}
+    vim.keymap.set('i', '<CR>', submit, opts_map)
+    vim.keymap.set('n', '<CR>', submit, opts_map)
+
+    vim.keymap.set('n', 'q', cancel, opts_map)
+    vim.keymap.set('n', '<Esc>', cancel, opts_map)
+
+    vim.api.nvim_create_autocmd("BufWipeout", {
+      buffer = buf,
+      callback = function()
+        if not confirmed then
+          callback(nil)
+        end
+      end
+    })
+
+
+    vim.defer_fn(function()
+        if vim.api.nvim_win_is_valid(win) then
+            if opts.default then
+                vim.cmd("startinsert!")
+            else
+                vim.cmd("startinsert")
+            end
+        end
+    end, 10)
+  end
+end
+
+function M.NewFile(path)
+  local fd = "fd --hidden --type directory . --strip-cwd-prefix --base-directory  "
+  local fzf = "fzf --keep-right --tiebreak=end"
+  M.fuzzyLogic({
+    title = "Select New File Path",
+    ratio = 0.6,
+    cmd = string.format("%s %s | %s", fd, path, fzf),
+    callback = function(selection)
+      vim.ui.input({prompt = "New file name: "}, function(input)
+        if input and input ~= "" then
+          vim.cmd("edit! " .. vim.fn.fnameescape(path .. selection .. "/" .. input))
+        else
+          vim.cmd("edit! " .. vim.fn.fnameescape(path .. selection).. "Untitled")
+        end
+      end)
+    end
+  })
+end
+
 return M
+

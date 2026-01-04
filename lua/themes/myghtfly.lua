@@ -5,12 +5,17 @@
 -- Basic Palette ---------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------------------
 local M = {}
+vim.g.colors_name = "Myghtfly"
 
 -- Background and foreground
+if vim.g.neovide then
+  local bg = "NONE"
+else
+end
+
 local none = "NONE"
 local black = "#011627"
 local white = "#c3ccdc"
-local bg = none
 
 -- Variations of midnight-blue
 local black_blue = "#081e2f"
@@ -64,16 +69,20 @@ local haze = "#87a3ba"
 -- -----------------------------------------------------------------------------------------------------------
 
 
--- Clearing all highlitghs
-function M.setup()
-  vim.cmd("highlight clear")
-  if vim.fn.exists("syntax_on") then
-    vim.cmd("syntax reset")
-  end
-end
 
 
 local groups = {
+  -- Markdown render
+  none =  {bg = none, fg = none},
+  markdownH1 = { fg = "#e06c75", bold = true },
+  markdownH2 = { fg = "#98c379", bold = true },
+  RenderMarkdownH1Bg = { bg = none },
+  RenderMarkdownH2Bg = { bg = none },
+  RenderMarkdownH3Bg = { bg = none },
+  RenderMarkdownH4Bg = { bg = none },
+  RenderMarkdownH5Bg = { bg = none },
+  RenderMarkdownH6Bg = { bg = none },
+
   -- Misc
   ColorColumn = { link = "String" },
   --
@@ -108,85 +117,81 @@ local groups = {
   Statement = { fg = violet },
   Structure = {fg = blue },
 
--- Default Interface
- Normal = { bg = none, fg = white },
- NormalNC = { bg = none },
- EndOfBuffer = { bg = none },
- Comment = { fg = grey_blue, italic = true },
- Search = { bg = pickle_blue, fg = white_blue },
- Cursor = { fg = bg, bg = blue },
+  -- Default Interface
+   EndOfBuffer = { bg = none },
+   Comment = { fg = grey_blue, italic = true },
+   Search = { bg = pickle_blue, fg = white_blue },
+   Cursor = { fg = bg, bg = blue },
 
- -- Command line
- ErrorMsg = {bg = none, fg = red},
- MoreMsg = {bg = none, fg = cello_blue},
- 
- --visual
- Visual = { bg = regal_blue },
- VisualNOS = { bg = regal_blue, fg = white },
- VisualNonText = { bg = regal_blue, fg = steel_blue },
+   -- Command line
+   ErrorMsg = {bg = none, fg = red},
+   MoreMsg = {bg = none, fg = cello_blue},
 
- -- borders and columns
- Statusline = { bg = none },
- StatusLineNC = { bg = none },
- WinSeparator = { bg = none },
- LineNr= { bg = none, fg = steel_blue }, -- numberline,
- SignColumn= { bg = none },
- NonText= { fg = blue, bold = true },
+   --visual
+   Visual = { bg = regal_blue },
+   VisualNOS = { bg = regal_blue, fg = white },
+   VisualNonText = { bg = regal_blue, fg = steel_blue },
 
- -- Pmenu
- Pmenu= { bg = none, fg = blue },
- PmenuSel= { bg = cyan_blue, fg = white_blue },
- PmenuSbar= { bg = none },
- PmenuThumb= { bg = none },
- WildMenu = { bg = cyan_blue, fg = white_blue },
+   -- Transparent moode 
+   Statusline = { bg = none },
+   StatusLineNC = { bg = none },
+   WinSeparator = { bg = none },
+   LineNr= { bg = none, fg = steel_blue }, -- numberline,
+   SignColumn= { bg = none },
+   NonText= { fg = blue, bold = true },
 
--- Floating window's ,
- NormalFloat= { bg = none, fg = blue },
- FloatBorder= { bg = none , fg = blue},
- FloatTitle= { bg = none, fg = malibu },
- MiniNotifyNormal= { bg = none,fg=malibu},
+   -- Pmenu
+   Pmenu= { bg = none, fg = blue },
+   PmenuSel= { bg = cyan_blue, fg = white_blue },
+   PmenuSbar= { bg = none },
+   PmenuThumb= { bg = none },
+   WildMenu = { bg = cyan_blue, fg = white_blue },
 
--- tabview,
- TabLine= { bg = none, fg = blue, bold = true }, -- Active,
- TabLineSel= { bg = none, fg = malibu }, -- inactive,
- TabLineFill= { bg = none }, -- tabline bg
+  -- Floating window's ,
+   FloatBorder = { bg = none , fg = blue},
+   FloatTitle = { bg = none, fg = malibu },
 
--- lsp,
- DiagnosticSignWarn= { bg = none, fg = tan },
+  -- tabview,
+   TabLine= { bg = none, fg = blue, bold = true }, -- Active,
+   TabLineSel= { bg = none, fg = malibu }, -- inactive,
+   TabLineFill= { bg = none }, -- tabline bg
 
--- Indent,
- MiniIndentscopeSymbol= { fg = blue }, -- tabline bg
+  -- lsp,
+   DiagnosticSignWarn= { bg = none, fg = tan },
 
--- Pick,
- MiniPickNormal= { bg = none,},
- MiniPickBorder= { bg = none,},
- MiniPickBorderText= { bg = none,},
- MiniPickMatchCurrent= { fg = blue},
- MiniPickPreviewLine= { fg = blue},
+  -- Indent,
+   MiniIndentscopeSymbol= { fg = blue }, -- tabline bg
 
--- Mini Files,
- MiniFilesTitle= {bg = none, fg = blue},
- MiniFilesTitleFocused= {bg = none, fg = blue},
+  -- Pick,
+   MiniPickNormal= { bg = none,},
+   MiniPickBorder= { bg = none,},
+   MiniPickBorderText= { bg = none,},
+   MiniPickMatchCurrent= { fg = blue},
+   MiniPickPreviewLine= { fg = blue},
 
- -- Diffs
-  DiffAdd =  { bg = plant },
-  DiffChange =  { bg = slate_blue },
-  DiffDelete =  { bg = slate_blue, fg = steel_blue },
-  DiffText =  { bg = kashmir },
+  -- Mini Files,
+   MiniFilesTitle= {bg = none, fg = blue},
+   MiniFilesTitleFocused= {bg = none, fg = blue},
 
-  --Icons
-  IconsBlue = {fg = blue},
-  IconsGrey = { fg = grey_blue},
-  IconsPurple = { fg = purple},
-  IconsOrange = { fg = orange},
-  IconsYellow = { fg = yellow},
+   -- Diffs
+    DiffAdd =  { bg = plant },
+    DiffChange =  { bg = slate_blue },
+    DiffDelete =  { bg = slate_blue, fg = steel_blue },
+    DiffText =  { bg = kashmir },
 
-  -- Misc
-  Directory = {bg = none, fg = blue},
+    --Icons
+    IconsBlue = {fg = blue},
+    IconsGrey = { fg = grey_blue},
+    IconsPurple = { fg = purple},
+    IconsOrange = { fg = orange},
+    IconsYellow = { fg = yellow},
 
-  -- Git
- GitSignAdd = { fg = "#7efb67", bold = true },
- GitSignDel = { fg = "#ff5189", bold = true },
+    -- Misc
+    Directory = {bg = none, fg = blue},
+
+    -- Git
+   GitSignAdd = { fg = "#7efb67", bold = true },
+   GitSignDel = { fg = "#ff5189", bold = true },
 
 --"Neovim Tree-sitter
   ["@attribute"] = { fg= blue },
@@ -254,10 +259,42 @@ local groups = {
   ["@variable.parameter"] = { fg = lavender },
 }
 
-for key, value in pairs(groups) do
-  vim.api.nvim_set_hl(0, key, value)
+-- Clearing all highlitghs
+function M.setup()
+  vim.cmd("highlight clear")
+  if vim.fn.exists("syntax_on") then
+    vim.cmd("syntax reset")
+  end
+  for key, value in pairs(groups) do
+    vim.api.nvim_set_hl(0, key, value)
+  end
 end
 
+local neovideSupport = {
+  Normal = Normal,
+  NormalNC = NormalNC,
+}
+
+-- TODO: Fix floating window bg in neovide
+-- neovide
+if vim.g.neovide then
+   Normal = { bg = "#011627", fg = white }
+   -- NormalNC = { bg =  "#011627" }
+   NormalFloat= { bg = none, fg = blue }
+   local MiniNotifyNormal = { bg = none,fg=malibu}
+
+ else
+   Normal = { bg = none, fg = white }
+   NormalNC = { bg = none }
+   NormalFloat= { bg = none, fg = blue }
+   local MiniNotifyNormal = { bg = none,fg=malibu}
+ end
+
+ for key, value in pairs(neovideSupport) do
+   vim.api.nvim_set_hl(0, key, value)
+ end
+
+-- =============================================================================
  M.icons_group = {
   -- Languages
   lua                    = { icon = '󰢱', hl = 'IconsBlue' },
@@ -284,5 +321,6 @@ end
  default_icon        = { icon = '󰀵', hl = 'IconsBlue'},
  -- default_icon = { icon = "󰈚", hl = "StatusLine" },
 }
+
 
 return M

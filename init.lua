@@ -1,20 +1,9 @@
--- Dashboard
-vim.api.nvim_create_autocmd("VimEnter", {
-  callback = function()
-    if vim.fn.argc() == 0 and vim.fn.line2byte("$") == -1 then
-      require('Custom_dashboard').drawDashboard()
-    end
-  end,
-})
-
--- make sure to require the colorscheme first
-local colors = require('omakase.nightflyPalette')
-colors.setup()
-
 -- =============================================================================
 -- Automatic Recursive Module Loader
 -- =============================================================================
 -- This script automatically loads all .lua files recursively from the 'lua/' directory.
+
+require('pure.fuzzyUtils').setup()
 
 local lua_path = vim.fn.stdpath('config') .. "/lua/"
 local files_to_load = vim.fn.glob(lua_path .. "/**/*.lua", true, true)
@@ -34,4 +23,3 @@ for _, file_path in ipairs(files_to_load) do
     vim.notify("Error loading " .. module_name .. ":\n" .. err, vim.log.levels.ERROR)
   end
 end
-
