@@ -1,18 +1,28 @@
 local M = {}
 
-local function processTemplate(contentStr)
-    local dateToday = os.date("%Y-%m-%d")
-    local timeNow = os.date("%H:%M")
-    local zettelID = os.date("%Y%m%d%H%M")
-
+local keywords = {
+  date = os.date("%Y-%m-%d"),
+  month =  os.date("%Y-%m"),
+  today =  os.date("+%A"),
+  -- hoje = vim.cmd("LC_TIME = pt_BR.UTF-8 date +%A"), --  and os.date("%A") or os.date("%A")
+  tomorrow =  os.date("%Y-%m-%d", os.time() + 86400),
+  yesterday = os.date("%Y-%m-%d", os.time() - 86400),
+  time = os.date("%H:%M"),
+  title = function()
     local filename = vim.fn.expand("%:t:r")
-    if filename == "" then filename = "Untitled" end
+    if filename ~= "" then return filename or "Untitled" end
+  end,
+  id = os.date("%Y%m%d%H%M"),
+}
 
-    local finalContent = contentStr
-    finalContent = finalContent:gsub("{{date}}", dateToday)
-    finalContent = finalContent:gsub("{{time}}", timeNow)
-    finalContent = finalContent:gsub("{{title}}", filename)
-    finalContent = finalContent:gsub("{{id}}", zettelID)
+local function processTemplate(contentStr)
+  local finalContent = contentStr
+    for key, value in pairs(keywords) do
+      local placeholder = "{{" .. key .. "}}"
+      if finalContent:find(placeholder, 1, true) then
+        finalContent = finalContent:gsub(placeholder, value)
+      end
+    end
 
     return vim.split(finalContent, "\n")
 end
@@ -36,7 +46,9 @@ function M.insertTemplate()
 
 
     local linesToInsert = processTemplate(content)
-    local row, _ = vim.api.nvim_win_get_cursor(0)
+    local cursorPos = vim.api.nvim_win_get_cursor(0)
+    local row = cursorPos[1]
+
     vim.api.nvim_buf_set_lines(0, row -1, row -1, false,linesToInsert)
   end)
 end

@@ -5,8 +5,9 @@ local M = {}
 local terminals = {}
 local func = require('configs.functions')
 
-function M.toggleTerminal(cmd)
+function M.toggleTerminal(cmd, ratio)
   cmd = cmd or "default"
+  ratio = ratio or 0.8
 
   local term = terminals[cmd]
 
@@ -38,7 +39,7 @@ function M.toggleTerminal(cmd)
   end
 
   -- Create a floating window, then switch to it.
-  local new_win, _ = func.createWindow(" ", 0.8)
+  local new_win, _ = func.createWindow(" ", ratio)
   vim.api.nvim_set_current_win(new_win)
 
   -- Set the working directory for this window only, then open the terminal.

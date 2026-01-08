@@ -1,6 +1,18 @@
 local M = {}
 local mini = require('plugins.mini')
 
+function M.ConfigHighlightByColorscheme(colorscheme, highlightGroups)
+  vim.api.nvim_create_autocmd("ColorScheme", {
+    pattern = colorscheme,
+    desc = "Set transparent float background for NeoSolarized",
+    callback = function()
+      for key, value in pairs(highlightGroups) do
+        vim.api.nvim_set_hl(0, key, value)
+      end
+    end,
+  })
+end
+
 function M.MyTabline()
   local line = ""
   local tabs = vim.api.nvim_list_tabpages()

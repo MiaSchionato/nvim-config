@@ -1,5 +1,6 @@
 local M = {}
 local func = require('configs.functions')
+local terms = require('pure.terms')
 local cache_dir = vim.fn.stdpath("cache") if vim.fn.isdirectory(cache_dir) == 0 then vim.fn.mkdir(cache_dir, "p") end
 
 function M.fuzzyLogic(opts)
@@ -352,6 +353,14 @@ function M.NewFile(path)
       end)
     end
   })
+end
+
+function M.CompilerCommand()
+  vim.ui.input({prompt = "Compiler Command:"}, function(input)
+    if input and input ~= "" then
+      terms.toggleTerminal(input, 0.6)
+    end
+  end)
 end
 
 return M

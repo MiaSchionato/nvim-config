@@ -62,8 +62,15 @@ vim.api.nvim_create_autocmd("TermOpen", {
     -- Check if the current window is a floating window
     if vim.api.nvim_win_get_config(0).relative ~= "" then
       -- Apply transparency specifically to this window
-      vim.opt_local.winblend = 30
+      vim.opt_local.winblend = 20
     end
   end,
 })
 
+vim.api.nvim_create_autocmd("VimLeave", {
+  pattern = "*",
+  callback = function()
+    os.remove(vim.fn.expand("~/.cache/nvim/*"))
+    os.remove(vim.fn.expand("~/.scratch/**/*"))
+  end,
+})
