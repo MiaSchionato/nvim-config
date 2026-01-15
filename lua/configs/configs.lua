@@ -34,7 +34,8 @@ o.scrolloff = 5
 o.termguicolors = true                       -- Enable 24-bit colors
 o.showmatch = true                           -- Highlight matching brackets
 o.cmdheight = 0                              -- Command line height (essentially none)
-o.completeopt = "menuone,noinsert,noselect"  -- Completion options
+
+o.completeopt = {"menu","menuone","noinsert","noselect"}  -- Completion options
 o.showmode = false                           -- Don't show mode in command line
 o.pumheight = 10                             -- Popup menu height
 o.pumborder = "rounded"                      -- Popup menu border style

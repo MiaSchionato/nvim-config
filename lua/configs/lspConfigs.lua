@@ -13,10 +13,12 @@ local servers = {
   'clangd',
   'copilot',
   'csharp_ls',
+  'scls',
+  -- 'ccls',
 }
 
 for _, server_name in ipairs(servers) do
-  vim.lsp.enable(server_name)
+    vim.lsp.enable(server_name)
   -- Each language file is expected to be a module in '~/.config/nvim/lsp/'
   -- It should return a function that takes the augroup and returns an LSP config table.
   local server_config_loader = require('lsp.' .. server_name)

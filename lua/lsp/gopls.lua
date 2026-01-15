@@ -13,11 +13,6 @@ return function(lang_settings_group)
     end,
   })
 
-  ---@class go_dir_custom_args
-  ---
-  ---@field envvar_id string
-  ---
-  ---@field custom_subdir string?
 
   local mod_cache = nil
   local std_lib = nil
@@ -98,7 +93,8 @@ return function(lang_settings_group)
   ---@type vim.lsp.Config
   return {
     cmd = { 'gopls' },
-    filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
+    filetypes = { 'go', 'gomod', 'gowork', 'gotmpl', 'gosum' },
+    root_markers = {'go.work', 'go.mod', '.git' },
     root_dir = function(bufnr, on_dir)
       local fname = vim.api.nvim_buf_get_name(bufnr)
       get_mod_cache_dir()

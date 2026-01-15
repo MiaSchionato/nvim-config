@@ -4,7 +4,7 @@ vim.pack.add({
 })
 
 -- completion (load and config native nvim completion)
-require('mini.completion').setup()
+-- require('mini.completion').setup()
 
 -- local function map_expr(lhs, rhs)
 --   vim.keymap.set('i', lhs, rhs, { expr = true, replace_keycodes = true})
@@ -104,16 +104,16 @@ require('mini.notify').setup({
 
 -- Mini Snippets
 --
-require('mini.snippets').setup({
-  snippets = {
-    require('mini.snippets').gen_loader.from_lang(),
-  },
-    mappings = {
-      jump_next = '<tab>',
-      jump_prev = '<S-tab>',
-    }
-})
-
-require('mini.snippets').start_lsp_server()
+-- require('mini.snippets').setup({
+--   snippets = {
+--     require('mini.snippets').gen_loader.from_lang(),
+--   },
+--     mappings = {
+--       jump_next = '<tab>',
+--       jump_prev = '<S-tab>',
+--     }
+-- })
+--
+-- require('mini.snippets').start_lsp_server()
 
 return M

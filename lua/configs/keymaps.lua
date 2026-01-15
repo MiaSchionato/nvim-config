@@ -199,7 +199,7 @@ map({ 'n', 'v' }, '<leader>ln', function () func.toggleNumber() func.toggleRelat
 -- Snippets
 -- map('i', '<Right>', func.snippetJumpNext, func.getOpts(expr_opts, 'Jump to the next arg on snippets'))
 -- map('i', '<Left>', func.snippetJumpPrev, func.getOpts(expr_opts, ' Jump to the previous arg on snippets'))
-map('i', '<Esc>', func.snippetStop, func.getOpts(opts, 'Close snippet'))
+-- map('i', '<Esc>', func.snippetStop, func.getOpts(opts, 'Close snippet'))
 map("n", "<leader>ie", "oif err != nil {<CR>}<Esc>Oreturn err<Esc>")
 
 
@@ -262,8 +262,9 @@ end, {expr = true, desc = "Smart Outer Quotes"})
 
 
 vim.schedule( function()
+
   map('i', '<tab>', function()
-    local pum = vim.fn.pumvisible()
+  local pum = vim.fn.pumvisible()
     if pum == 1 then
       return "<C-n>"
     end
@@ -272,22 +273,33 @@ vim.schedule( function()
       return "<tab>"
     end
 
+    if vim.snippet.active({direction = 1}) then
+      return "<cmd>lua vim.snippet.jump(1)<cr>"
+    end
+
       return "<right>"
     end, { expr = true, replace_keycodes = true})
 
+  map('i', '<S-tab>', function()
+    local pum = vim.fn.pumvisible()
+    if pum == 1 then
+      return "<C-p>"
+    end
 
-   map('i','<S-tab>', function()
+    if func.isBlank() then
+      return "<S-tab>"
+    end
 
-     if func.isBlank() then
-       return "<S-tab>"
-     end
+    if vim.snippet.active({direction = 1}) then
+      return "<cmd>lua vim.snippet.jump(-1)<cr>"
+    end
 
-       return "<left>"
-     end,{ expr = true, replace_keycodes = true})
+      return "<left>"
+    end, { expr = true, replace_keycodes = true})
 
 
    map('i', '<CR>', function()
-     local pum = vim.fn.pumvisible()
+    local pum = vim.fn.pumvisible()
      if pum == 1 then
        return "<C-y>"
      end
@@ -299,6 +311,24 @@ vim.schedule( function()
      return "<CR>"
    end,{ expr = true, replace_keycodes = true})
 end)
+
 -- vim.g.copilot_no_tab_map = true
 
-
+vim.keymap.set("i", "<CR>", function()
+  if vim.fn.pumvisible() == 1 then
+    -- Pega os dados do item selecionado antes de fechar o menu
+    local item = vim.fn.complete_info({ "selected" }).items[1]
+    
+    -- Se houver algo selecionado e for um snippet (ou vier do scls)
+    if item and item.word ~= "" then
+      vim.schedule(function()
+        -- Tenta expandir o que foi inserido usando o motor nativo
+        -- O scls envia o snippet no corpo, o Neovim 0.10+ detecta automaticamente
+        -- mas as vezes precisa desse trigger se o 'kind' for snippet.
+        vim.snippet.expand(item.word) 
+      end)
+    end
+    return "<C-y>"
+  end
+  return "<CR>"
+end, { expr = true })

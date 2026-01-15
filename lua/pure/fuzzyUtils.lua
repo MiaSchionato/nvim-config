@@ -222,6 +222,9 @@ function M.fuzzyColorscheme()
       callback = function(theme)
         vim.cmd("colorscheme "  .. vim.fn.fnameescape(theme))
         vim.g.MY_THEME = theme
+        if vim.g.neovide then
+          vim.api.nvim_set_hl(0,'Normal', { bg = "#060b1e" })
+        end
       end
     })
 end

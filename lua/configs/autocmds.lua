@@ -76,3 +76,26 @@ vim.api.nvim_create_autocmd("VimLeave", {
     os.remove(vim.fn.expand("~/.scratch/**/*"))
   end,
 })
+
+-- PopUp Menu Completion
+vim.api.nvim_create_autocmd("InsertCharPre", {
+  callback = function()
+    if vim.fn.pumvisible() == 0 and vim.v.char:match("[%w_]") then
+
+      vim.schedule(function()
+        if next(vim.lsp.get_clients({bufnr = 0})) then
+          vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<C-x><C-o>", true, false, true), "n")
+        else
+          vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<C-x><C-n>", true, false, true), "n")
+        end
+      end)
+    end
+  end,
+})
+vim.api.nvim_create_autocmd("CompleteDone", {
+  callback = function()
+    local completed_item = vim.v.completed_item
+    if completed_item and completed_item.user_data and completed_item.user_data.nvim and completed_item.user_data.nvim.lsp then
+    end
+  end
+})
