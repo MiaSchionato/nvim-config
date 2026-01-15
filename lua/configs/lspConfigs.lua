@@ -1,19 +1,22 @@
 -- Central LSP and language settings configurator
 
-vim.lsp.enable({
-  "lua_ls",
-  "gopls",
-  "markdown_oxide",
-  "marksman",
-})
 -- Define a single augroup for all language-specific editor settings.
 -- This prevents files from overwriting each other's autocommands.
 local lang_settings_group = vim.api.nvim_create_augroup('LanguageSettings', { clear = true })
 
 -- List of servers to configure
-local servers = { 'lua_ls', 'gopls', 'markdown_oxide', 'marksman' }
+local servers = {
+  'lua_ls',
+  'gopls',
+  'markdown_oxide',
+  'marksman',
+  'clangd',
+  'copilot',
+  'csharp_ls',
+}
 
 for _, server_name in ipairs(servers) do
+  vim.lsp.enable(server_name)
   -- Each language file is expected to be a module in '~/.config/nvim/lsp/'
   -- It should return a function that takes the augroup and returns an LSP config table.
   local server_config_loader = require('lsp.' .. server_name)

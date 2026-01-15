@@ -310,4 +310,18 @@ function M.toggleCopilot()
   end
 end
 
+---@return boolean verify if it's a blank line or space before the cursor
+function M.isBlank()
+  local col = vim.api.nvim_win_get_cursor(0)[2]
+
+  if col == 0 then
+    return true
+  end
+
+  local line = vim.api.nvim_get_current_line()
+  local charBeforeLine = line:sub(col, col)
+
+  return charBeforeLine == " " or charBeforeLine == "\t"
+end
+
 return M

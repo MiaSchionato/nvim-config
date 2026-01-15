@@ -111,7 +111,7 @@ function M.fuzzyGitGrep()
 end
 
 function M.fuzzyJump()
-  -- Get tablet contet
+  -- Get table content
   local jumplist = vim.fn.getjumplist()
   local jumps = {}
     for _, jump in ipairs(jumplist[1]) do

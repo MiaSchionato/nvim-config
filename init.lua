@@ -3,6 +3,7 @@
 -- =============================================================================
 -- This script automatically loads all .lua files recursively from the 'lua/' directory.
 
+
 require('pure.fuzzyUtils').setup()
 
 local lua_path = vim.fn.stdpath('config') .. "/lua/"

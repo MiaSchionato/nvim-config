@@ -29,11 +29,6 @@ map('n', "ge", "G", opts)
 map('n', "=", "<cmd>foldopen<cr>", opts)
 map('n', "+", "<cmd>foldclose<cr>", opts)
 
--- map("n", "x", "V", func.getOpts(opts,"Line select (like x on Helix editor)" ))
--- map("v", "x", "j", func.getOpts(opts,"Line select (like x on Helix editor)" ))
--- map("n", "z", "V", func.getOpts(opts,"Line select (like x on Helix editor)" ))
--- map("v", "z", "k", func.getOpts(opts,"Line select (like x on Helix editor)" ))
-
 map("n", "<leader>x", "<cmd>so<cr>", opts)
 
 map("n", "U", "<C-r>", opts)
@@ -46,14 +41,18 @@ map('n', "<leader>wq", "<cmd>tabclose<CR>", func.getOpts(opts, "Close Tab" ))
 map('n', "<leader>wo", "<cmd>tabonly<CR>", func.getOpts(opts, "Close all other Tabs" ))
 
 -- == Files mappings ==
--- map('n', '-', func.toggleExplore , func.getOpts(opts, 'Toggle Mini Files'))
--- map('n', '<leader>e', ":Lexplore<cr>" , func.getOpts(opts, 'Toggle Mini Files'))
-map('n', '<leader>e', "<cmd>Oil<cr>" , func.getOpts(opts, 'Toggle Mini Files'))
+map('n', '<leader>e', "<cmd>Oil<cr>" , func.getOpts(opts, "Open Oil File Explorer" ))
+map("n", "<leader>oh","<cmd>Oil /Users/mia/<cr>", func.getOpts(opts, "Oil open Home Directory"))
+map("n", "<leader>op","<cmd>Oil /Users/mia/Projects/<cr>", func.getOpts(opts, "Oil open Projects Directory"))
+map("n", "<leader>on","<cmd>Oil /Users/mia/.config/nvim/<cr>", func.getOpts(opts, "Oil open Nvim config Directory"))
+map("n", "<leader>ol","<cmd>Oil /Users/mia/Documents/my_devops_journey/Languages/<cr>", func.getOpts(opts, "Oil open Languages Directory"))
+map('n', "<leader>o.","<cmd>Oil /Users/mia/.config/<cr>", func.getOpts(opts, "Oil open Directory"))
+map('n', "<leader>om","<cmd>Oil /Users/mia/Documents/MindGarden/<cr>", func.getOpts(opts, "Oil open Directory"))
 
 
--- == Fuzzt Search ==
+-- == Fuzzy Search ==
 -- Fuzzy Search Directories
-map("n", "<leader>ff",function()fzf.fuzzySearch("/Users/mia/")end, func.getOpts(opts, "Fuzzy Search Home Directory"))
+map("n", "<leader>fh",function()fzf.fuzzySearch("/Users/mia/")end, func.getOpts(opts, "Fuzzy Search Home Directory"))
 map("n", "<leader><leader>",function()fzf.fuzzySearch(vim.fn.expand("%:p:h:h").."/")end, func.getOpts(opts, "Fuzzy Search Home Directory"))
 map("n", "<leader>fp",function()fzf.fuzzySearch("/Users/mia/Projects/")end, func.getOpts(opts, "Fuzzy Search Projects Directory"))
 map("n", "<leader>fn",function()fzf.fuzzySearch("/Users/mia/.config/nvim/")end, func.getOpts(opts, "Fuzzy Search Nvim config Directory"))
@@ -198,8 +197,8 @@ map({ 'n', 'v' }, '<leader>lrn', func.toggleRelativenumber, func.getOpts(opts, '
 map({ 'n', 'v' }, '<leader>ln', function () func.toggleNumber() func.toggleRelativenumber() end, func.getOpts(opts, 'Toggle relativenumber'))
 
 -- Snippets
-map('i', '<Right>', func.snippetJumpNext, func.getOpts(expr_opts, 'Jump to the next arg on snippets'))
-map('i', '<Left>', func.snippetJumpPrev, func.getOpts(expr_opts, ' Jump to the previous arg on snippets'))
+-- map('i', '<Right>', func.snippetJumpNext, func.getOpts(expr_opts, 'Jump to the next arg on snippets'))
+-- map('i', '<Left>', func.snippetJumpPrev, func.getOpts(expr_opts, ' Jump to the previous arg on snippets'))
 map('i', '<Esc>', func.snippetStop, func.getOpts(opts, 'Close snippet'))
 map("n", "<leader>ie", "oif err != nil {<CR>}<Esc>Oreturn err<Esc>")
 
@@ -256,5 +255,50 @@ end, {expr = true, desc = "Smart Inner Quotes"})
 map({'x', 'o'}, 'aq',function ()
   return "a" .. func.smartQuote()
 end, {expr = true, desc = "Smart Outer Quotes"})
+
+-- ============================================================================================================
+-- Smart Tab and auto-completes
+-- ============================================================================================================
+
+
+vim.schedule( function()
+  map('i', '<tab>', function()
+    local pum = vim.fn.pumvisible()
+    if pum == 1 then
+      return "<C-n>"
+    end
+
+    if func.isBlank() then
+      return "<tab>"
+    end
+
+      return "<right>"
+    end, { expr = true, replace_keycodes = true})
+
+
+   map('i','<S-tab>', function()
+
+     if func.isBlank() then
+       return "<S-tab>"
+     end
+
+       return "<left>"
+     end,{ expr = true, replace_keycodes = true})
+
+
+   map('i', '<CR>', function()
+     local pum = vim.fn.pumvisible()
+     if pum == 1 then
+       return "<C-y>"
+     end
+
+     if func.isBlank() then
+       return "<CR>"
+     end
+
+     return "<CR>"
+   end,{ expr = true, replace_keycodes = true})
+end)
+-- vim.g.copilot_no_tab_map = true
 
 

@@ -2,6 +2,7 @@ local utils = require("configs.functions")
 local colorschemes = {
   ["solarized-osaka"]  =  "craftzdog/solarized-osaka.nvim",
   eldritch =  "eldritch-theme/eldritch.nvim",
+  ethereal =  "bjarneo/ethereal.nvim",
   catppuccin = "catppuccin/nvim",
   tokyonight = "folke/tokyonight.nvim",
   ["rose-pine"] = "rose-pine/neovim",

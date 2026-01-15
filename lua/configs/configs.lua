@@ -11,7 +11,7 @@ o.number = true                              -- Line numbers
 o.relativenumber = true                      -- Relative line numbers
 o.cursorline = false                          -- Highlight current line
 o.winborder = "rounded"                       -- Border of windows 
-o.wrap = false
+o.wrap = true
 o.list = true
 o.listchars:append({ extends = "⟩", precedes = "⟨" })
 
@@ -38,8 +38,8 @@ o.completeopt = "menuone,noinsert,noselect"  -- Completion options
 o.showmode = false                           -- Don't show mode in command line
 o.pumheight = 10                             -- Popup menu height
 o.pumborder = "rounded"                      -- Popup menu border style
--- o.pumblend = 30                              -- Popup menu transparency
--- o.winblend = 30                              -- Floating window transparency
+o.pumblend = 0                              -- Popup menu transparency
+o.winblend = 0                              -- Floating window transparency
 o.conceallevel= 0                            -- Don't hide markup
 o.concealcursor = ""                         -- Don't hide cursor line markup
 o.lazyredraw = true                          -- Don't redraw during macros
@@ -90,4 +90,3 @@ vim.g.netrw_winsize = 25
 vim.g.netrw_banner = 0
 vim.g.netrw_keepdir = 0
 o.autochdir = true
-o.winblend = 100

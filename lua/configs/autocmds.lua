@@ -8,6 +8,8 @@ vim.api.nvim_create_autocmd("VimEnter", {
       if ok and theme then pcall(theme.setup, {transparent = true}) end
       pcall(vim.cmd.colorscheme, vim.g.MY_THEME)
     end
+    -- Disable annoying commenting while coding 
+    vim.api.nvim_set_hl(0,"DiagnosticUnnecessary", {})
   end
 })
 
@@ -56,16 +58,16 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Terminal transparency for floating windows
-vim.api.nvim_create_autocmd("TermOpen", {
-  group = vim.api.nvim_create_augroup("MiaTermTransparency", { clear = true }),
-  callback = function()
-    -- Check if the current window is a floating window
-    if vim.api.nvim_win_get_config(0).relative ~= "" then
-      -- Apply transparency specifically to this window
-      vim.opt_local.winblend = 20
-    end
-  end,
-})
+-- vim.api.nvim_create_autocmd("TermOpen", {
+--   group = vim.api.nvim_create_augroup("MiaTermTransparency", { clear = true }),
+--   callback = function()
+--     -- Check if the current window is a floating window
+--     if vim.api.nvim_win_get_config(0).relative ~= "" then
+--       -- Apply transparency specifically to this window
+--       vim.opt_local.winblend = 20
+--     end
+--   end,
+-- })
 
 vim.api.nvim_create_autocmd("VimLeave", {
   pattern = "*",

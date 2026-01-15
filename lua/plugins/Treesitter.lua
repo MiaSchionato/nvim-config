@@ -7,7 +7,10 @@ vim.pack.add({
 
 local treesitter = require('nvim-treesitter')
 treesitter.setup({
-  ensure_installed = { "c",
+  ensure_installed = {
+  "c",
+  "cpp",
+  "cs",
   "lua",
   "json",
   "vim",
